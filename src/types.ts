@@ -35,19 +35,6 @@ export interface User {
   password: string;
 }
 
-// export interface SelectItem {
-//   key: number;
-//   question: string;
-//   select_1: string;
-//   select_2: string;
-//   select_1_id: string;
-//   select_2_id: string;
-// }
-
-// export interface SelectItems {
-//   [key: number]: SelectItem[];
-// }
-
 export interface ResultItem {
   key: number;
   id: string;

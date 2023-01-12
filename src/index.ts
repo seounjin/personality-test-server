@@ -11,7 +11,7 @@ const session = require("express-session");
 
 const cookieParser = require("cookie-parser");
 
-initMongoDb();
+// initMongoDb();
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -48,6 +48,6 @@ routes.forEach(({ method, route, handler }) => {
 
 app.get("/", (req, res) => res.send("Hello World!"));
 
-app.listen(8000, () => {
-  console.log("server listening on 8000...");
+app.listen(8080, () => {
+  console.log("server listening on 8080...");
 });
