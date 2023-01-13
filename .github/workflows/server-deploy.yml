@@ -21,4 +21,4 @@ jobs:
           password: ${{ secrets.GCR_TOKEN }}
       
       - name: Run docker-compose
-        run: docker-compose up --exit-code-from SERVICE
+        run: docker-compose up --exit-code-from express
