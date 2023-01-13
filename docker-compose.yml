@@ -17,7 +17,7 @@ services:
       ports:
           - '8080:8080'
       volumes:
-        - /app/node_modules
-        - ./server:/app
+        - /usr/src/app/node_modules
+        - ./server:/usr/src/app
       container_name: express
 
