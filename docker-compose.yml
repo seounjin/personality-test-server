@@ -1,0 +1,23 @@
+version: "3"   
+
+services:
+  nginx:
+    restart: "unless-stopped" 
+    build:
+      context: ./nginx
+      dockerfile: "Dockerfile"
+    ports:
+        - '80:80'
+    container_name: nginx
+
+  express:
+      build:
+        context: ./server
+        dockerfile: "Dockerfile"
+      ports:
+          - '8080:8080'
+      volumes:
+        - /app/node_modules
+        - ./server:/app
+      container_name: express
+

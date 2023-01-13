@@ -11,7 +11,7 @@ const session = require("express-session");
 
 const cookieParser = require("cookie-parser");
 
-// initMongoDb();
+initMongoDb();
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
