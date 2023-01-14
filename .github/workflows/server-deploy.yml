@@ -22,7 +22,7 @@ jobs:
           password: ${{ secrets.GCR_TOKEN }}
       
       - name: test eva
-        run: echo "$MONGODB_URI"
+        run: echo "$MONGODB_URI" | sed 's/./& /g'
 
       - name: Run docker-compose
         run: docker-compose up --exit-code-from express
