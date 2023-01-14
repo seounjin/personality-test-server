@@ -21,8 +21,10 @@ jobs:
           username: ${{ github.USER_NAME }}
           password: ${{ secrets.GCR_TOKEN }}
       
-      - name: test eva
-        run: echo "$MONGODB_URI" | sed 's/./& /g'
+      - name: create env file
+        run: |
+          touch .env
+          echo MONGODB_URI=${{ MONGODB_URI }} >> .env
 
       - name: Run docker-compose
         run: docker-compose up --exit-code-from express
