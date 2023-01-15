@@ -1,0 +1,11 @@
+version: "3"   
+
+services:
+  nginx:
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+  express:
+    volumes:
+      - /usr/src/app/node_modules
+      - ./server:/usr/src/app
