@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      API_HOST: ${{ secrets.API_HOST }}
+      API_PORT: ${{ secrets.API_PORT }}
+      PROD_SERVICE_PORT: ${{ secrets.PROD_SERVICE_PORT }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
