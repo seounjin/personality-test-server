@@ -1,5 +1,7 @@
 FROM node:16-alpine
 
+ARG EXPOSE_PORT
+
 WORKDIR /usr/src/app
 
 COPY package*.json ./
@@ -12,6 +14,6 @@ COPY ./ ./
 
 RUN npm run build
 
-EXPOSE 8080
+EXPOSE ${EXPOSE_PORT}
 
 CMD [ "npm", "start" ]

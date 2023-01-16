@@ -2,10 +2,14 @@ version: "3"
 
 services:
   nginx:
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-
+    environment:
+      - EXPRESS_PORT=8080
+      - API_HOST=express
+      - API_PORT=8080
   express:
+    build:
+      args:
+        - EXPOSE_PORT=8080
     volumes:
       - /usr/src/app/node_modules
       - ./server:/usr/src/app

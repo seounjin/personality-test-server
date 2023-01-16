@@ -7,16 +7,16 @@ services:
       context: ./nginx
       dockerfile: "Dockerfile"
     ports:
-        - '80:80'
+      - '80:80'
     container_name: nginx
-
+    volumes:
+      - ./nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template
+      
   express:
       environment:
         - MONGODB_URI
       build:
         context: ./server
         dockerfile: "Dockerfile"
-      ports:
-          - '8080:8080'
       container_name: express
 
