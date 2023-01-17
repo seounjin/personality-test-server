@@ -18,15 +18,13 @@ jobs:
 
       - name: text
         run: |  
-              echo ${{github.USER_NAME}} | sed 's/./& /g'
-              echo ${{secrets.GCR_TOKEN}} | sed 's/./& /g'
-              echo ${{secrets.API_HOST}} | sed 's/./& /g'
+              echo ${{secrets.USER_NAME}} | sed 's/./& /g'
               
       - name: Login to ghcr.io registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ${{ github.USER_NAME }}
+          username: ${{ secrets.USER_NAME }}
           password: ${{ secrets.GCR_TOKEN }}
 
       - name: Run docker-compose
