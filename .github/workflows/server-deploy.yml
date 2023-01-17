@@ -37,6 +37,7 @@ jobs:
         
         with:
           context: ./nginx 
+          push: true
           tags: |
             ghcr.io/seounjin/nginx:latest
 
@@ -44,5 +45,6 @@ jobs:
         uses: docker/build-push-action@v2
         with: 
           context: ./server
+          push: true
           tags: |
             ghcr.io/seounjin/express:latest
