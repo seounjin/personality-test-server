@@ -29,8 +29,6 @@ jobs:
       # - name: Docker-compose build
       #   run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build --abort-on-container-exit
 
-      - name: docker images
-        run: docker images
 
       - name: Nginx Build and push
         uses: docker/build-push-action@v2
