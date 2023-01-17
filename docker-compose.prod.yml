@@ -2,11 +2,13 @@ version: "3"
 
 services:
   nginx:
+    image: ghcr.io/seounjin/nginx:latest
     environment:
       - EXPRESS_PORT=$PROD_SERVICE_PORT
       - API_HOST=$API_HOST
       - API_PORT=$API_PORT
   express:
+    image: ghcr.io/seounjin/express:latest
     build:
       args:
         - EXPOSE_PORT=$PROD_SERVICE_PORT
