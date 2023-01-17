@@ -16,6 +16,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: text
+        run: 'echo "${{ github.USER_NAME }}" > key'
 
       - name: Login to ghcr.io registry
         uses: docker/login-action@v2
@@ -25,7 +27,7 @@ jobs:
           password: ${{ secrets.GCR_TOKEN }}
 
       - name: Run docker-compose
-        run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml  --abort-on-container-exit --exit-code-from express
+        run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build --abort-on-container-exit --exit-code-from express
 
       - name: docker images
         run: docker images
