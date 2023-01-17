@@ -34,14 +34,15 @@ jobs:
 
       - name: Nginx Build and push
         uses: docker/build-push-action@v2
-        context: ./nginx
-        with: 
+        
+        with:
+          context: ./nginx 
           tags: |
             ghcr.io/seounjin/nginx:latest
 
       - name: Express Build and push
         uses: docker/build-push-action@v2
-        context: ./server
         with: 
+          context: ./server
           tags: |
             ghcr.io/seounjin/express:latest
