@@ -5,44 +5,17 @@ on:
     branches: main
 
 jobs:
-  build-and-push-image:
+  build:
     runs-on: ubuntu-latest
-    env:
-      MONGODB_URI: ${{ secrets.MONGODB_URI }}
-      API_HOST: ${{ secrets.API_HOST }}
-      API_PORT: ${{ secrets.API_PORT }}
-      PROD_SERVICE_PORT: ${{ secrets.PROD_SERVICE_PORT }}
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
 
-      - name: Login to ghcr.io registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ secrets.USER_NAME }}
-          password: ${{ secrets.GCR_TOKEN }}
-
-      # - name: Docker-compose build
-      #   run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build --abort-on-container-exit
-
-
-      - name: Nginx Build and push
-        uses: docker/build-push-action@v2
-        
-        with:
-          context: ./nginx 
-          push: true
-          tags: |
-            ghcr.io/seounjin/nginx:latest
-
-      - name: Express Build and push
-        uses: docker/build-push-action@v2
-        with: 
-          context: ./server
-          push: true
-          tags: |
-            ghcr.io/seounjin/express:latest
+    - name: create directory
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_KEY }}
+        script: mkdir -p /home/ubuntu/app
