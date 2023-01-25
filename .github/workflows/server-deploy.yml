@@ -12,17 +12,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Create Env File
+      - name: Create Root Env File
         working-directory: ./
         run: |
           touch .env
           echo PROD_SERVICE_PORT=${{ secrets.PROD_SERVICE_PORT }} >> .env
           echo API_HOST=${{ secrets.API_HOST }} >> .env
           echo API_PORT=${{ secrets.API_PORT }} >> .env
+      
+      - name: Create Server Env File
+        working-directory: ./server
+        run: |
+          touch .env
           echo MONGODB_URI=${{ secrets.MONGODB_URI }} >> .env
           echo DEV_PORT=${{ secrets.DEV_PORT }} >> .env
           echo PROD_PORT=${{ secrets.PROD_PORT }} >> .env
           echo CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> .env
+
 
       - name: Make zip file
         run: zip -qq -r ./$GITHUB_SHA.zip .
