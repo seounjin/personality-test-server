@@ -36,3 +36,11 @@ jobs:
       
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://personality-test-server-bucket/$GITHUB_SHA.zip
+
+      - name: Code deploy
+        run: >
+          aws deploy create-deployment 
+          --application-name personality-test-deploy-aplication
+          --deployment-config-name CodeDeployDefault.OneAtATime 
+          --deployment-group-name personality-test-deploy-group 
+          --s3-location bucket=personality-test-server-bucket,bundleType=zip,key=$GITHUB_SHA.zip

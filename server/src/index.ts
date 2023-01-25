@@ -24,10 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(
-  cors({
-    origin: CORS_ORIGIN,
-    credentials: true,
-  })
+  cors()
 );
 
 
