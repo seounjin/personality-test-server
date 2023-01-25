@@ -16,33 +16,32 @@ jobs:
         working-directory: ./
         run: |
           touch .env
-          PROD_SERVICE_PORT=${{ secrets.PROD_SERVICE_PORT }} >> .env
-          API_HOST=${{ secrets.API_HOST }} >> .env
-          API_PORT=${{ secrets.API_PORT }} >> .env
-          MONGODB_URI=${{ secrets.MONGODB_URI }} >> .env
-          DEV_PORT=${{ secrets.DEV_PORT }} >> .env
-          PROD_PORT=${{ secrets.PROD_PORT }} >> .env
-          CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> .env
-          cat .env
-          
-      # - name: Make zip file
-      #   run: zip -qq -r ./$GITHUB_SHA.zip .
-      #   shell: bash
+          echo PROD_SERVICE_PORT=${{ secrets.PROD_SERVICE_PORT }} >> .env
+          echo API_HOST=${{ secrets.API_HOST }} >> .env
+          echo API_PORT=${{ secrets.API_PORT }} >> .env
+          echo MONGODB_URI=${{ secrets.MONGODB_URI }} >> .env
+          echo DEV_PORT=${{ secrets.DEV_PORT }} >> .env
+          echo PROD_PORT=${{ secrets.PROD_PORT }} >> .env
+          echo CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> .env
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: ap-northeast-2
+      - name: Make zip file
+        run: zip -qq -r ./$GITHUB_SHA.zip .
+        shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
       
-      # - name: Upload to S3
-      #   run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://personality-test-server-bucket/$GITHUB_SHA.zip
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://personality-test-server-bucket/$GITHUB_SHA.zip
 
-      # - name: Code deploy
-      #   run: >
-      #     aws deploy create-deployment 
-      #     --application-name personality-test-deploy-aplication
-      #     --deployment-config-name CodeDeployDefault.OneAtATime 
-      #     --deployment-group-name personality-test-deploy-group 
-      #     --s3-location bucket=personality-test-server-bucket,bundleType=zip,key=$GITHUB_SHA.zip
+      - name: Code deploy
+        run: >
+          aws deploy create-deployment 
+          --application-name personality-test-deploy-aplication
+          --deployment-config-name CodeDeployDefault.OneAtATime 
+          --deployment-group-name personality-test-deploy-group 
+          --s3-location bucket=personality-test-server-bucket,bundleType=zip,key=$GITHUB_SHA.zip
