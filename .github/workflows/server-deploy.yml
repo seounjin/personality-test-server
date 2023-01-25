@@ -25,7 +25,7 @@ jobs:
           CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> .env
 
       - name: Make zip file
-        run: zip -qq -r ./$GITHUB_SHA.zip
+        run: zip -qq -r ./$GITHUB_SHA.zip .
         shell: bash
 
       - name: Configure AWS credentials
