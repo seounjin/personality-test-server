@@ -13,6 +13,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Create Env File
+        working-directory: ./
         run: |
           touch .env
           PROD_SERVICE_PORT=${{ secrets.PROD_SERVICE_PORT }} >> .env
@@ -24,7 +25,7 @@ jobs:
           CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> .env
 
       - name: Make zip file
-        run: zip -qq -r ./$GITHUB_SHA.zip .
+        run: zip -qq -r ./$GITHUB_SHA.zip
         shell: bash
 
       - name: Configure AWS credentials
