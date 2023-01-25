@@ -12,10 +12,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: create directory
-        uses: appleboy/ssh-action@master
+      - name: Create Env File
+        run: |
+          touch .env
+          PROD_SERVICE_PORT=${{ secrets.PROD_SERVICE_PORT }} >> .env
+          API_HOST=${{ secrets.API_HOST }} >> .env
+          API_PORT=${{ secrets.API_PORT }} >> .env
+          MONGODB_URI=${{ secrets.MONGODB_URI }} >> .env
+          DEV_PORT=${{ secrets.DEV_PORT }} >> .env
+          PROD_PORT=${{ secrets.PROD_PORT }} >> .env
+          CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> .env
+
+      - name: Make zip file
+          run: zip -qq -r ./$GITHUB_SHA.zip .
+          shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SSH_KEY }}
-          script: mkdir -p /home/ubuntu/app
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+      
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://personality-test-server-bucket/$GITHUB_SHA.zip
