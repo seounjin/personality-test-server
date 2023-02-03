@@ -18,8 +18,7 @@ services:
     image: certbot/certbot
     restart: unless-stopped
     volumes:
-      - ./nginx/certbot/etc:/etc/letsencrypt
-      - ./nginx/certbot/var:/var/lib/letsencrypt
+      - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/www:/var/www/certbot
     command: "certonly --dry-run --webroot --webroot-path=/var/www/certbot --email ${SSL_EMAIL} --agree-tos --no-eff-email --staging -d ${SERVER_DOMAIN}"
     env_file:
