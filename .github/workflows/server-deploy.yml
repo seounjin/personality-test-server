@@ -24,7 +24,7 @@ jobs:
         working-directory: ./server
         run: |
           touch .env
-          echo MONGODB_URI=${{ secrets.MONGODB_URI }} >> .env
+          echo SERVER_DOMAIN=${{ secrets.SERVER_DOMAIN }} >> .env
           echo DEV_PORT=${{ secrets.DEV_PORT }} >> .env
           echo PROD_PORT=${{ secrets.PROD_PORT }} >> .env
           echo CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> .env
