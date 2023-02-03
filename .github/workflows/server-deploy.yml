@@ -20,6 +20,7 @@ jobs:
           echo API_HOST=${{ secrets.API_HOST }} >> .env
           echo API_PORT=${{ secrets.API_PORT }} >> .env
           echo SERVER_DOMAIN=${{ secrets.SERVER_DOMAIN }} >> .env
+          echo SSL_EMAIL=${{ secrets.SSL_EMAIL }} >> .env
       
       - name: Create Server Env File
         working-directory: ./server
