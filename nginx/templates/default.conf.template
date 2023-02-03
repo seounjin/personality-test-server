@@ -3,7 +3,7 @@ server {
      listen 80;
      listen [::]:80;
 
-     server_name ${SERVER_DOMAIN} www.${SERVER_DOMAIN};
+     server_name ${SERVER_DOMAIN};
 
      location /.well-known/acme-challenge/ {
              allow all;
