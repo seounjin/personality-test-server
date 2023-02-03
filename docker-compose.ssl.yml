@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template
+      - ./nginx/certbot/conf:/etc/letsencrypt 
+      - ./nginx/certbot/www:/var/www/certbot
     ports:
       - 80:80
       - 443:443
@@ -16,7 +18,7 @@ services:
     volumes:
       - ./nginx/certbot/etc:/etc/letsencrypt
       - ./nginx/certbot/var:/var/lib/letsencrypt
-      - ./nginx/certbot/www:/var/www/html
-    command: "certonly --webroot --webroot-path=/var/www/html --email ${SSL_EMAIL} --agree-tos --no-eff-email --force-renewal -d ${SERVER_DOMAIN} -d www.${SERVER_DOMAIN}"
+      - ./nginx/certbot/www:/var/www/certbot
+    command: "certonly --webroot --webroot-path=/var/www/certbot --email ${SSL_EMAIL} --agree-tos --no-eff-email --force-renewal -d ${SERVER_DOMAIN} -d www.${SERVER_DOMAIN}"
     env_file:
       - .env
