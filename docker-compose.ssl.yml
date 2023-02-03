@@ -1,8 +1,10 @@
 version: '3'
 services:
   nginx:
-    image: nginx:latest
     restart: unless-stopped
+    build:
+      context: ./nginx
+      dockerfile: "Dockerfile"
     volumes:
       - ./nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template
       - ./nginx/certbot/conf:/etc/letsencrypt 
