@@ -1,17 +1,6 @@
 version: "3"   
 
 services:
-  nginx:
-    restart: "unless-stopped" 
-    build:
-      context: ./nginx
-      dockerfile: "Dockerfile"
-    ports:
-      - '80:80'
-    container_name: nginx
-    volumes:
-      - ./nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template
-      
   express:
       environment:
         - MONGODB_URI
@@ -19,4 +8,18 @@ services:
         context: ./server
         dockerfile: "Dockerfile"
       container_name: express
+      
+  nginx:
+    restart: "unless-stopped" 
+    build:
+      context: ./nginx
+      dockerfile: "Dockerfile"
+    ports:
+      - '80:80'
+      - 443:443
+    container_name: nginx
+    volumes:
+      - ./nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template
+    environment:
+      - SERVER_DOMAIN=$SERVER_DOMAIN
 
