@@ -3,7 +3,7 @@ domains=(rororo-marshmallow.store www.rororo-marshmallow.store)
 rsa_key_size=4096
 data_path="./nginx/certbot"
 email="qustjdwls123@naver.com" 
-staging=1 
+staging=0 
 
 if [ -d "$data_path" ]; then
   read -p "Existing data found for $domains. Continue and replace existing certificate? (y/N) " decision

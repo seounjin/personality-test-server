@@ -22,7 +22,7 @@ services:
     depends_on:
       - express
     container_name: certbot
-    image: certbot/certbot
+    image: certbot/certbot:latest
     restart: unless-stopped
     volumes:
       - ./nginx/certbot/conf:/etc/letsencrypt
