@@ -8,14 +8,14 @@ services:
         context: ./server
         dockerfile: "Dockerfile"
       container_name: express
-      
+
   nginx:
     restart: "unless-stopped" 
     build:
       context: ./nginx
       dockerfile: "Dockerfile"
     ports:
-      - '80:80'
+      - 80:80
       - 443:443
     container_name: nginx
     volumes:
