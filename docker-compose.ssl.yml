@@ -2,13 +2,10 @@ version: "3"
 
 services:
   nginx:
-    container_name: nginx-ssl
-    restart: unless-stopped
-    build:
-      context: ./nginx
-      dockerfile: "Dockerfile"
+    image: nginx:latest
+    restart: "unless-stopped" 
     volumes:
-      - ./nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/www:/var/www/certbot
     ports:
