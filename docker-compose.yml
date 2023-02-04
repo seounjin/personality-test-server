@@ -19,7 +19,8 @@ services:
       - 443:443
     container_name: nginx
     volumes:
-      - ./nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template
+        - nginx.conf /etc/nginx/conf.d/
+      # - ./nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template
     environment:
       - SERVER_DOMAIN=$SERVER_DOMAIN
 
