@@ -10,8 +10,8 @@ services:
   nginx:
     image: ghcr.io/seounjin/nginx:latest
     volumes:
-      - ./nginx/conf:/etc/letsencrypt
-      - ./nginx/www:/var/www/certbot
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
     environment:
       - EXPRESS_PORT=$PROD_SERVICE_PORT
       - API_HOST=$API_HOST
@@ -25,6 +25,6 @@ services:
     image: certbot/certbot
     restart: unless-stopped
     volumes:
-      - ./nginx/conf:/etc/letsencrypt
-      - ./nginx/www:/var/www/certbot
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
