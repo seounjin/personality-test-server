@@ -1,11 +1,6 @@
 version: "3"   
 
 services:
-  nginx:
-    environment:
-      - EXPRESS_PORT=8080
-      - API_HOST=express
-      - API_PORT=8080
   express:
     build:
       args:

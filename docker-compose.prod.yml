@@ -10,10 +10,12 @@ services:
     volumes:
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/www:/var/www/certbot
-    environment:
-      - API_HOST=$API_HOST
-      - API_PORT=$API_PORT
-      - SERVER_DOMAIN=$SERVER_DOMAIN
+    #environment:
+      # - API_HOST=$API_HOST
+      # - API_PORT=$API_PORT
+      # - SERVER_DOMAIN=$SERVER_DOMAIN
+    env_file:
+      - .env
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   certbot:
