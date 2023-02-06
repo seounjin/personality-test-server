@@ -1,3 +1,9 @@
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
 
    upstream express {
         server express:${API_PORT};
@@ -37,4 +43,4 @@
         }
 
     }
-
+}

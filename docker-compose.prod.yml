@@ -8,6 +8,7 @@ services:
 
   nginx:
     volumes:
+      - ./nginx/templates/default.conf.template:/etc/nginx/conf.d/default.conf.template
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/www:/var/www/certbot
     #environment:
