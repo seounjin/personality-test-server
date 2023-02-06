@@ -2,20 +2,18 @@ version: "3"
 
 services:
   express:
-    # image: ghcr.io/seounjin/express:latest
     build:
       args:
         - EXPOSE_PORT=$PROD_SERVICE_PORT
 
   nginx:
-    # image: ghcr.io/seounjin/nginx:latest
     volumes:
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/www:/var/www/certbot
     environment:
-      - EXPRESS_PORT=$PROD_SERVICE_PORT
       - API_HOST=$API_HOST
       - API_PORT=$API_PORT
+      - SERVER_DOMAIN:$SERVER_DOMAIN
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   certbot:
