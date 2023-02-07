@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 
 export interface ResultItem {
   typeContent: string;

@@ -1,7 +1,7 @@
 import express from "express";
 import { initMongoDb } from "./config/connectDB";
-import cardsRoute from "./routes/cards";
 import personalityRoute from "./routes/personality";
+import userRoute from "./routes/user";
 import { CustomRoute } from "./types";
 import dotenv from "dotenv";
 dotenv.config();
@@ -24,13 +24,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(
-  cors()
+  cors({origin: 'http://localhost:3000',
+  credentials: true
+})
 );
 
 
 app.use("/static", express.static(__dirname + "/public"));
 
-const routes: CustomRoute[] = [...cardsRoute, ...personalityRoute];
+const routes: CustomRoute[] = [...personalityRoute, ...userRoute];
 
 routes.forEach(({ method, route, handler }) => {
   app[method](route, handler);

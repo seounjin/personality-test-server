@@ -2,13 +2,13 @@ import {
   PersonalityModel,
   SelectItemsModel,
   ResultItemsModel,
-} from "../models/personality.model";
+} from "../models/personalityModel/personality.model";
 import { mongoose } from "@typegoose/typegoose";
 import {
   OptionValuesToSelect,
   Personality,
   ResultItem,
-} from "../models/personality.type";
+} from "../models/personalityModel/personality.type";
 
 interface BasicInformationItem {
   title: string;
