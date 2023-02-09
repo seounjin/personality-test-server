@@ -17,6 +17,12 @@ import bcrypt from 'bcrypt';
 
 
 class User {
+
+
+  public static async comparePassword(password: string, dbPassword: string): Promise<boolean> {
+    return await bcrypt.compare(password, dbPassword);
+}
+
   @prop({ unique: true, required: true })
   email: string;
 
