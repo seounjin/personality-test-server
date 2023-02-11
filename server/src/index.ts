@@ -2,6 +2,7 @@ import express from "express";
 import { initMongoDb } from "./config/connectDB";
 import personalityRoute from "./routes/personality";
 import userRoute from "./routes/user";
+import authRoute from "./routes/auth";
 import { CustomRoute } from "./types";
 import dotenv from "dotenv";
 dotenv.config();
@@ -32,7 +33,7 @@ app.use(
 
 app.use("/static", express.static(__dirname + "/public"));
 
-const routes: CustomRoute[] = [...personalityRoute, ...userRoute];
+const routes: CustomRoute[] = [...personalityRoute, ...userRoute, ...authRoute];
 
 routes.forEach(({ method, route, handler }) => {
   app[method](route, handler);

@@ -56,3 +56,13 @@ export const validateUser = async (data: UserInformation):Promise<ValidateUserRe
         return Promise.reject(error);
     }
 }
+
+export const saveRefreshToken = async (email: string, token: string) => {
+
+    try {
+        await UserModel.findOneAndUpdate({ email: email}, { refreshToken: token }).exec();
+    } catch (error) {
+        return Promise.reject(error);
+    }
+
+} 

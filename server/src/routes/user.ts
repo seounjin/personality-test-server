@@ -14,7 +14,6 @@ const userRoute: CustomRoute[] = [
       route: "/api/v1/user/login",
       handler: userLogin,
     },
-
   ];
   
   export default userRoute;
