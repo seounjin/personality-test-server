@@ -33,7 +33,8 @@ jobs:
           echo PROD_PORT=${{ secrets.PROD_PORT }} >> .env
           echo CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> .env
           echo MONGODB_URI=${{ secrets.MONGODB_URI }} >> .env
-
+          echo JWT_ACCESS_TOKEN_SECRET_KEY=${{ secrets.JWT_ACCESS_TOKEN_SECRET_KEY }} >> .env
+          echo JWT_REFRESH_TOKEN_SECRET_KEY=${{ secrets.JWT_REFRESH_TOKEN_SECRET_KEY }} >> .env
 
       - name: Make zip file
         run: zip -qq -r ./$GITHUB_SHA.zip .

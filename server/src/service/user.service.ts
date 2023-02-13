@@ -66,3 +66,12 @@ export const saveRefreshToken = async (email: string, token: string) => {
     }
 
 } 
+
+export const deleteRefreshToken = async (token: string) => {
+
+    try {
+        await UserModel.findOneAndUpdate({ refreshToken: token}, { refreshToken: '' }).exec();
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

@@ -1,6 +1,6 @@
 import express, { Response } from "express";
 import { createAccessToken, createRefreshToken } from "../service/auth.service";
-import { saveRefreshToken, setUserInformation, validateUser } from "../service/user.service";
+import { deleteRefreshToken, saveRefreshToken, setUserInformation, validateUser } from "../service/user.service";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -66,3 +66,26 @@ export const userLogin = async (
   }
 
 };
+
+export const userLogout = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => { 
+
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) throw new Error('refreshToken 없음');
+    await deleteRefreshToken(refreshToken);
+
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+
+    return res.status(200).json({ success: true });
+
+  } catch (error) {
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    return res.status(401).send();
+  }
+
+}

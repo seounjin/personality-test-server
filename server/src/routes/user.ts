@@ -1,4 +1,4 @@
-import { userLogin, userSignup } from "../controllers/user.controller";
+import { userLogin, userLogout, userSignup } from "../controllers/user.controller";
 import { CustomRoute, METHOD } from "../types";
 
 
@@ -14,6 +14,12 @@ const userRoute: CustomRoute[] = [
       route: "/api/v1/user/login",
       handler: userLogin,
     },
-  ];
-  
-  export default userRoute;
+
+  {
+    method: METHOD.GET,
+    route: "/api/v1/user/logout",
+    handler: userLogout,
+  },
+];
+
+export default userRoute;
