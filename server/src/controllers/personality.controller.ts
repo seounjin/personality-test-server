@@ -11,8 +11,12 @@ export const setPersonality = async (
   res: express.Response
 ): Promise<Response> => {
   const { data } = body;
-  await setPersonalityItems(data);
-  return res.status(201).json({ success: true });
+  try {
+    await setPersonalityItems(data);
+    return res.status(201).json({ success: true });    
+  } catch (error) {
+    return res.status(500).send();
+  }
 };
 
 export const getPersonality = async (

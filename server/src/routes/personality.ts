@@ -5,12 +5,14 @@ import {
   getPersonalityItem,
   getPersonalityTestResult,
 } from "../controllers/personality.controller";
+import auth from "../middleware/auth";
+
 
 const personalityRoute: CustomRoute[] = [
   {
     method: METHOD.POST,
     route: "/api/v1/personality",
-    handler: setPersonality,
+    handler: [ auth, setPersonality ],
   },
   {
     method: METHOD.GET,

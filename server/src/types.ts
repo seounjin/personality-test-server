@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction } from "express";
 
 export enum METHOD {
   GET = "get",
@@ -13,7 +13,7 @@ export enum DBField {
   RESULT_ITEM = "result_item",
 }
 
-export type Handler = (req: express.Request, res: express.Response) => void;
+export type Handler = (req: express.Request, res: express.Response, next: NextFunction) => void;
 
 export interface CustomRoute {
   method: METHOD;
@@ -46,8 +46,3 @@ export interface ResultItems {
   [key: string]: ResultItem[];
 }
 
-declare module "express-session" {
-  export interface SessionData {
-    cardId: number;
-  }
-}

@@ -22,30 +22,32 @@ interface PersonalityItem {
 }
 
 export const setPersonalityItems = async (personalityItem: PersonalityItem) => {
-  const {
-    basicInformationItem: { title, explain },
-    typeItems,
-    selectItems,
-  } = personalityItem;
-
-  const selectOptionItems = new SelectItemsModel({
-    _id: new mongoose.Types.ObjectId(),
-    selectItems: selectItems,
-  });
-
-  const resultItems = new ResultItemsModel({
-    _id: new mongoose.Types.ObjectId(),
-    resultItems: typeItems,
-  });
-
-  const personality = new PersonalityModel({
-    title: title,
-    explain: explain,
-    selectItems: selectOptionItems._id,
-    resultItems: resultItems._id,
-  });
-
   try {
+    
+    const {
+      basicInformationItem: { title, explain },
+      typeItems,
+      selectItems,
+    } = personalityItem;
+
+    const selectOptionItems = new SelectItemsModel({
+      _id: new mongoose.Types.ObjectId(),
+      selectItems: selectItems,
+    });
+
+    const resultItems = new ResultItemsModel({
+      _id: new mongoose.Types.ObjectId(),
+      resultItems: typeItems,
+    });
+
+    const personality = new PersonalityModel({
+      title: title,
+      explain: explain,
+      selectItems: selectOptionItems._id,
+      resultItems: resultItems._id,
+    });
+
+ 
     await Promise.all([
       await resultItems.save(),
       await selectOptionItems.save(),
