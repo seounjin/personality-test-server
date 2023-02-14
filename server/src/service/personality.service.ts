@@ -19,15 +19,17 @@ interface PersonalityItem {
   basicInformationItem: BasicInformationItem;
   typeItems: ResultItem[];
   selectItems: OptionValuesToSelect[];
+  userId: string;
 }
 
 export const setPersonalityItems = async (personalityItem: PersonalityItem) => {
   try {
-    
+
     const {
       basicInformationItem: { title, explain },
       typeItems,
       selectItems,
+      userId,
     } = personalityItem;
 
     const selectOptionItems = new SelectItemsModel({
@@ -45,6 +47,7 @@ export const setPersonalityItems = async (personalityItem: PersonalityItem) => {
       explain: explain,
       selectItems: selectOptionItems._id,
       resultItems: resultItems._id,
+      author: userId,
     });
 
  

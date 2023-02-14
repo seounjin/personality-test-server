@@ -7,12 +7,15 @@ import {
 } from "../service/personality.service";
 
 export const setPersonality = async (
-  { body }: express.Request,
+  req: express.Request,
   res: express.Response
 ): Promise<Response> => {
-  const { data } = body;
+  const { data } = req.body;
+
+  const personalityItem = {...data, userId: req.user.split('@')[0] };
+
   try {
-    await setPersonalityItems(data);
+    await setPersonalityItems(personalityItem);
     return res.status(201).json({ success: true });    
   } catch (error) {
     return res.status(500).send();
