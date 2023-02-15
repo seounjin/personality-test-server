@@ -4,7 +4,10 @@ import {
   getAllPersonalityItems,
   getPersonalityItemById,
   getPersonalityTestResultByType,
+  getMyPersonalityItems,
+  deletePersonalityItems,
 } from "../service/personality.service";
+import { splitEmail } from "../utils";
 
 export const setPersonality = async (
   req: express.Request,
@@ -12,7 +15,7 @@ export const setPersonality = async (
 ): Promise<Response> => {
   const { data } = req.body;
 
-  const personalityItem = {...data, userId: req.user.split('@')[0] };
+  const personalityItem = {...data, userId: splitEmail(req.user) };
 
   try {
     await setPersonalityItems(personalityItem);
@@ -47,4 +50,29 @@ export const getPersonalityTestResult = async (
   const type = req.params.type;
   const data = await getPersonalityTestResultByType(id, type);
   return res.status(200).json({ data });
+};
+
+
+export const getMyPersonalityTest = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => {
+  const userId = splitEmail(req.user);
+  const data = await getMyPersonalityItems(userId);
+  return res.status(200).json({ data: data });
+};
+
+export const deletePersonalityTest  = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => {
+  const id = parseInt(req.params.id);
+
+  try {
+    await deletePersonalityItems(id);
+    return res.status(200).json({ success: true });  
+  } catch (error) {
+    return res.status(503).send();
+  }
+  
 };

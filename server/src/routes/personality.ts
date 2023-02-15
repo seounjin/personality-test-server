@@ -4,11 +4,18 @@ import {
   getPersonality,
   getPersonalityItem,
   getPersonalityTestResult,
+  getMyPersonalityTest,
+  deletePersonalityTest,
 } from "../controllers/personality.controller";
 import auth from "../middleware/auth";
 
 
 const personalityRoute: CustomRoute[] = [
+  {
+    method: METHOD.GET,
+    route: "/api/v1/personality/my-personality",
+    handler: [auth, getMyPersonalityTest]
+  },
   {
     method: METHOD.POST,
     route: "/api/v1/personality",
@@ -28,6 +35,11 @@ const personalityRoute: CustomRoute[] = [
     method: METHOD.GET,
     route: "/api/v1/personality/:id/results/:type",
     handler: getPersonalityTestResult,
+  },
+  {
+    method: METHOD.DELETE,
+    route: "/api/v1/personality/:id",
+    handler: [ auth, deletePersonalityTest],
   },
 ];
 

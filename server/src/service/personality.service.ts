@@ -153,3 +153,38 @@ export const getPersonalityTestResultByType = async (
   ]);
   return res[0];
 };
+
+
+
+export const getMyPersonalityItems = async (author:string): Promise<Personality[]> => {
+
+  try {
+    const res = await PersonalityModel.find(
+      {author: author},
+      { _id: 0, selectItems: 0, resultItems: 0 }
+    );
+
+    return res;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const deletePersonalityItems = async (id: number) => {
+  
+  try {
+
+    const res = await PersonalityModel.findOneAndDelete({ id: id });   
+    if (!res) return Promise.reject('찾으려는 문서가 없음');
+
+    await Promise.all([
+      await SelectItemsModel.findOneAndDelete({_id: res.selectItems}),
+      await ResultItemsModel.findOneAndDelete({_id: res.resultItems}),
+    ]);
+
+
+  } catch (error) {
+    return Promise.reject('error');
+  }
+
+}
