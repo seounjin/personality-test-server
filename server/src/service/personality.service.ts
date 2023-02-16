@@ -184,7 +184,47 @@ export const deletePersonalityItems = async (id: number) => {
 
 
   } catch (error) {
-    return Promise.reject('error');
+    return Promise.reject(error);
+  }
+
+}
+
+export const getDetailPersonalityItemsById = async (id: number) => {
+  
+  try {
+
+    const personality = await PersonalityModel.findOne({ id: id });   
+    if (!personality) return Promise.reject('찾으려는 문서가 없음');
+
+    const selectItems = await SelectItemsModel.findOne({ _id: personality.selectItems }, {_id:0});   
+    const resultItems = await ResultItemsModel.findOne({ _id: personality.resultItems }, {_id:0});   
+    
+    return { basicInformationItems: { title: personality.title, explain: personality.explain }, selectItems,  resultItems}
+  } catch (error) {
+    return Promise.reject(error);
+  }
+
+}
+
+
+export const updatePersonalityItemsById =  async (personalityItem: PersonalityItem, id: number) => {
+
+  const {
+    basicInformationItem: { title, explain },
+    typeItems,
+    selectItems,
+  } = personalityItem;
+
+  try {
+
+    const personality = await PersonalityModel.findOneAndUpdate({ id: id }, {$set: { title: title, explain: explain}}).exec();   
+    if (!personality) return Promise.reject('찾으려는 문서가 없음');
+
+    await SelectItemsModel.findOneAndUpdate({ _id: personality.selectItems }, {$set: { selectItems: selectItems}}).exec();   
+    await ResultItemsModel.findOneAndUpdate({ _id: personality.resultItems }, {$set: { resultItems: typeItems}}).exec();   
+    
+  } catch (error) {
+    return Promise.reject(error);
   }
 
 }

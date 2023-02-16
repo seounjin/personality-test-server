@@ -15,11 +15,11 @@ const userRoute: CustomRoute[] = [
       handler: userLogin,
     },
 
-  {
-    method: METHOD.GET,
-    route: "/api/v1/user/logout",
-    handler: userLogout,
-  },
+    {
+      method: METHOD.GET,
+      route: "/api/v1/user/logout",
+      handler: userLogout,
+    },
 ];
 
 export default userRoute;
