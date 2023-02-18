@@ -228,3 +228,13 @@ export const updatePersonalityItemsById =  async (personalityItem: PersonalityIt
   }
 
 }
+
+export const updateAuthortoAdmin = async (author: string) => {
+
+  try {
+      await PersonalityModel.updateMany({ author: author }, {$set: { author: 'admin', public: false}}).exec();
+
+  } catch (error) {
+      return Promise.reject(error)
+  }
+}

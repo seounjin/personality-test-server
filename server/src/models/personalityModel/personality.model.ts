@@ -49,6 +49,9 @@ class Personality {
   @prop({ required: true })
   author: string;
 
+  @prop({ required: true })
+  public: boolean;
+
   @prop({ required: true, ref: SelectItems })
   selectItems: Ref<SelectItems>;
 

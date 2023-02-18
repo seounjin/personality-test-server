@@ -75,3 +75,13 @@ export const deleteRefreshToken = async (token: string) => {
         return Promise.reject(error);
     }
 }
+
+export const deleteUserInformation = async (email: string) => {
+
+    try {
+        await UserModel.findOneAndDelete({ email: email});
+    } catch (error) {
+        return Promise.reject(error);
+    }
+
+}

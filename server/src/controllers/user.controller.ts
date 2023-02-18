@@ -1,7 +1,9 @@
 import express, { Response } from "express";
 import { createAccessToken, createRefreshToken } from "../service/auth.service";
-import { deleteRefreshToken, saveRefreshToken, setUserInformation, validateUser } from "../service/user.service";
+import { deleteRefreshToken, deleteUserInformation, saveRefreshToken, setUserInformation, validateUser } from "../service/user.service";
 import dotenv from "dotenv";
+import { splitEmail } from "../utils";
+import { updateAuthortoAdmin } from "../service/personality.service";
 dotenv.config();
 
 process.env.NODE_ENV = ( process.env.NODE_ENV && ( process.env.NODE_ENV ).trim().toLowerCase() == 'production' ) ? 'production' : 'development';
@@ -86,6 +88,30 @@ export const userLogout = async (
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
     return res.status(401).send();
+  }
+}
+
+
+export const userSignout = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => { 
+
+  try {
+
+    const email = req.user;
+    await deleteUserInformation(email);
+
+    const author = splitEmail(email);
+    await updateAuthortoAdmin(author);
+
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    return res.status(200).json({ success: true });
+
+  } catch (error) {
+   return res.status(500).send();
+
   }
 
 }

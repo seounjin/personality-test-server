@@ -1,4 +1,6 @@
-import { userLogin, userLogout, userSignup } from "../controllers/user.controller";
+import { userLogin, userLogout, userSignout, userSignup } from "../controllers/user.controller";
+import auth from "../middleware/auth";
+import comparePassword from "../middleware/comparePassword";
 import { CustomRoute, METHOD } from "../types";
 
 
@@ -19,6 +21,11 @@ const userRoute: CustomRoute[] = [
       method: METHOD.GET,
       route: "/api/v1/user/logout",
       handler: userLogout,
+    },
+    {
+      method: METHOD.POST,
+      route: "/api/v1/user/signout",
+      handler: [auth, comparePassword, userSignout],
     },
 ];
 

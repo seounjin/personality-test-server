@@ -61,7 +61,7 @@ export const getMyPersonalityTest = async (
 ): Promise<Response> => {
   const userId = splitEmail(req.user);
   const data = await getMyPersonalityItems(userId);
-  return res.status(200).json({ data: data });
+  return res.status(200).json({ data: data, user: req.user });
 };
 
 export const deletePersonalityTest  = async (
