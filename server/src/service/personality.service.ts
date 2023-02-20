@@ -20,6 +20,7 @@ interface PersonalityItem {
   typeItems: ResultItem[];
   selectItems: OptionValuesToSelect[];
   userId: string;
+  isPublic: boolean
 }
 
 export const setPersonalityItems = async (personalityItem: PersonalityItem) => {
@@ -30,6 +31,7 @@ export const setPersonalityItems = async (personalityItem: PersonalityItem) => {
       typeItems,
       selectItems,
       userId,
+      isPublic
     } = personalityItem;
 
     const selectOptionItems = new SelectItemsModel({
@@ -45,6 +47,7 @@ export const setPersonalityItems = async (personalityItem: PersonalityItem) => {
     const personality = new PersonalityModel({
       title: title,
       explain: explain,
+      isPublic: isPublic,
       selectItems: selectOptionItems._id,
       resultItems: resultItems._id,
       author: userId,
@@ -199,7 +202,7 @@ export const getDetailPersonalityItemsById = async (id: number) => {
     const selectItems = await SelectItemsModel.findOne({ _id: personality.selectItems }, {_id:0});   
     const resultItems = await ResultItemsModel.findOne({ _id: personality.resultItems }, {_id:0});   
     
-    return { basicInformationItems: { title: personality.title, explain: personality.explain }, selectItems,  resultItems}
+    return { basicInformationItems: { title: personality.title, explain: personality.explain, isPublic: personality.isPublic }, selectItems,  resultItems}
   } catch (error) {
     return Promise.reject(error);
   }
@@ -213,11 +216,12 @@ export const updatePersonalityItemsById =  async (personalityItem: PersonalityIt
     basicInformationItem: { title, explain },
     typeItems,
     selectItems,
+    isPublic,
   } = personalityItem;
 
   try {
 
-    const personality = await PersonalityModel.findOneAndUpdate({ id: id }, {$set: { title: title, explain: explain}}).exec();   
+    const personality = await PersonalityModel.findOneAndUpdate({ id: id }, {$set: { title: title, explain: explain, isPublic: isPublic }}).exec();   
     if (!personality) return Promise.reject('찾으려는 문서가 없음');
 
     await SelectItemsModel.findOneAndUpdate({ _id: personality.selectItems }, {$set: { selectItems: selectItems}}).exec();   
@@ -232,7 +236,7 @@ export const updatePersonalityItemsById =  async (personalityItem: PersonalityIt
 export const updateAuthortoAdmin = async (author: string) => {
 
   try {
-      await PersonalityModel.updateMany({ author: author }, {$set: { author: 'admin', public: false}}).exec();
+      await PersonalityModel.updateMany({ author: author }, {$set: { author: 'admin', isPublic: false}}).exec();
 
   } catch (error) {
       return Promise.reject(error)

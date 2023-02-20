@@ -50,7 +50,7 @@ class Personality {
   author: string;
 
   @prop({ required: true })
-  public: boolean;
+  isPublic: boolean;
 
   @prop({ required: true, ref: SelectItems })
   selectItems: Ref<SelectItems>;
