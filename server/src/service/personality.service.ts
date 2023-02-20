@@ -67,7 +67,7 @@ export const setPersonalityItems = async (personalityItem: PersonalityItem) => {
 export const getAllPersonalityItems = async (): Promise<Personality[]> => {
   try {
     const res = await PersonalityModel.find(
-      {},
+      { isPublic: true },
       { _id: 0, selectItems: 0, resultItems: 0 }
     );
 
@@ -112,6 +112,13 @@ export const getPersonalityItemById = async (
     return Promise.reject(error);
   }
 };
+
+export const getPersonalityById = async (id: number) => {
+
+  const personality = await PersonalityModel.findOne({ id: id });   
+  if (!personality) return Promise.reject({ status: 404, error: 'id에 해당하는 성향테스트 데이터가 없음' });
+  return personality;
+}
 
 export const getPersonalityTestResultByType = async (
   id: number,

@@ -10,6 +10,7 @@ import {
   updatePersonality,
 } from "../controllers/personality.controller";
 import auth from "../middleware/auth";
+import checkPublic from "../middleware/checkPublic";
 
 
 const personalityRoute: CustomRoute[] = [
@@ -41,7 +42,7 @@ const personalityRoute: CustomRoute[] = [
     {
       method: METHOD.GET,
       route: "/api/v1/personality/:id",
-      handler: getPersonalityItem,
+      handler: [checkPublic, getPersonalityItem],
     },
     {
       method: METHOD.GET,
