@@ -2,13 +2,17 @@ import {
   PersonalityModel,
   SelectItemsModel,
   ResultItemsModel,
+  MbtiSelectItemsModel,
 } from "../models/personalityModel/personality.model";
 import { mongoose } from "@typegoose/typegoose";
 import {
+  MbtiTypeTest,
   OptionValuesToSelect,
   Personality,
   ResultItem,
+  ScoreTypeTest,
 } from "../models/personalityModel/personality.type";
+import { detailPersonalityItemsLookup } from "../utils/aggregation";
 
 interface BasicInformationItem {
   title: string;
@@ -21,48 +25,9 @@ interface PersonalityItem {
   selectItems: OptionValuesToSelect[];
   userId: string;
   isPublic: boolean
+  testType: string;
 }
 
-export const setPersonalityItems = async (personalityItem: PersonalityItem) => {
-  try {
-
-    const {
-      basicInformationItem: { title, explain },
-      typeItems,
-      selectItems,
-      userId,
-      isPublic
-    } = personalityItem;
-
-    const selectOptionItems = new SelectItemsModel({
-      _id: new mongoose.Types.ObjectId(),
-      selectItems: selectItems,
-    });
-
-    const resultItems = new ResultItemsModel({
-      _id: new mongoose.Types.ObjectId(),
-      resultItems: typeItems,
-    });
-
-    const personality = new PersonalityModel({
-      title: title,
-      explain: explain,
-      isPublic: isPublic,
-      selectItems: selectOptionItems._id,
-      resultItems: resultItems._id,
-      author: userId,
-    });
-
- 
-    await Promise.all([
-      await resultItems.save(),
-      await selectOptionItems.save(),
-      await personality.save(),
-    ]);
-  } catch (error) {
-    return Promise.reject(error);
-  }
-};
 
 export const getAllPersonalityItems = async (): Promise<Personality[]> => {
   try {
@@ -124,54 +89,58 @@ export const getPersonalityTestResultByType = async (
   id: number,
   type: string
 ) => {
-  const res = await PersonalityModel.aggregate([
-    {
-      $match: { id: id },
-    },
-    {
-      $lookup: {
-        from: "resultitems",
-        let: { resultItemsId: "$resultItems" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: ["$_id", "$$resultItemsId"],
+  try {
+    const res = await PersonalityModel.aggregate([
+      {
+        $match: { id: id },
+      },
+      {
+        $lookup: {
+          from: "resultitems",
+          let: { resultItemsId: "$resultItems" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$_id", "$$resultItemsId"],
+                },
+              },
+            },
+          ],
+          as: "items",
+        },
+      },
+      {
+        $unwind: "$items",
+      },
+      {
+        $project: {
+          resultItems: {
+            $filter: {
+              input: "$items.resultItems",
+              cond: {
+                $eq: ["$$this.typeContent", type],
               },
             },
           },
-        ],
-        as: "items",
-      },
-    },
-    {
-      $unwind: "$items",
-    },
-    {
-      $project: {
-        resultItems: {
-          $filter: {
-            input: "$items.resultItems",
-            cond: {
-              $eq: ["$$this.typeContent", type],
-            },
-          },
+          _id: 0,
         },
-        _id: 0,
       },
-    },
-  ]);
-  return res[0];
+    ]);
+    return res[0];
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
 
 
 
-export const getMyPersonalityItems = async (author:string): Promise<Personality[]> => {
+export const getMyPersonalityItemsByAuthor = async (author:string): Promise<Personality[]> => {
 
   try {
     const res = await PersonalityModel.find(
-      {author: author},
-      { _id: 0, selectItems: 0, resultItems: 0 }
+      { author: author },
+      { _id: 0, selectItems: 0, resultItems: 0, mbtiSelectItems: 0, isPublic: 0 }
     );
 
     return res;
@@ -180,7 +149,7 @@ export const getMyPersonalityItems = async (author:string): Promise<Personality[
   }
 };
 
-export const deletePersonalityItems = async (id: number) => {
+export const deleteScoreTypeTestById = async (id: number) => {
   
   try {
 
@@ -196,20 +165,38 @@ export const deletePersonalityItems = async (id: number) => {
   } catch (error) {
     return Promise.reject(error);
   }
-
 }
 
-export const getDetailPersonalityItemsById = async (id: number) => {
+export const deleteMbtiTypeTestById = async (id: number) => {
   
   try {
 
-    const personality = await PersonalityModel.findOne({ id: id });   
-    if (!personality) return Promise.reject('찾으려는 문서가 없음');
+    const res = await PersonalityModel.findOneAndDelete({ id: id });   
+    if (!res) return Promise.reject('찾으려는 문서가 없음');
 
-    const selectItems = await SelectItemsModel.findOne({ _id: personality.selectItems }, {_id:0});   
-    const resultItems = await ResultItemsModel.findOne({ _id: personality.resultItems }, {_id:0});   
-    
-    return { basicInformationItems: { title: personality.title, explain: personality.explain, isPublic: personality.isPublic }, selectItems,  resultItems}
+    await Promise.all([
+      await MbtiSelectItemsModel.findOneAndDelete({_id: res.selectItems}),
+      await ResultItemsModel.findOneAndDelete({_id: res.resultItems}),
+    ]);
+
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+
+}
+
+export const getDetailPersonalityItemsByIdAndTestType = async (id: number, testType: string) => {
+
+  try {
+    const res = await PersonalityModel.aggregate([
+      {
+        $match: { id: id },
+      },
+      ...detailPersonalityItemsLookup(testType),
+    ]);
+
+    return res[0];
   } catch (error) {
     return Promise.reject(error);
   }
@@ -217,14 +204,14 @@ export const getDetailPersonalityItemsById = async (id: number) => {
 }
 
 
-export const updatePersonalityItemsById =  async (personalityItem: PersonalityItem, id: number) => {
+export const updateScoreTypeItemsById =  async (scoreTypeTestItems: PersonalityItem, id: number) => {
 
   const {
     basicInformationItem: { title, explain },
     typeItems,
     selectItems,
     isPublic,
-  } = personalityItem;
+  } = scoreTypeTestItems;
 
   try {
 
@@ -237,7 +224,28 @@ export const updatePersonalityItemsById =  async (personalityItem: PersonalityIt
   } catch (error) {
     return Promise.reject(error);
   }
+}
 
+export const updateMbtiTypeItemsById =  async (mbtiTypeTestItems: MbtiTypeTest, id: number) => {
+
+  const {
+    basicInformationItem: { title, explain },
+    mbtiTypeItems,
+    mbtiSelectItems,
+    isPublic,
+  } = mbtiTypeTestItems;
+
+  try {
+
+    const personality = await PersonalityModel.findOneAndUpdate({ id: id }, {$set: { title: title, explain: explain, isPublic: isPublic }}).exec();   
+    if (!personality) return Promise.reject('찾으려는 문서가 없음');
+
+    await MbtiSelectItemsModel.findOneAndUpdate({ _id: personality.selectItems }, {$set: { selectItems: mbtiSelectItems}}).exec();   
+    await ResultItemsModel.findOneAndUpdate({ _id: personality.resultItems }, {$set: { resultItems: mbtiTypeItems}}).exec();   
+    
+  } catch (error) {
+    return Promise.reject(error);
+  }
 }
 
 export const updateAuthortoAdmin = async (author: string) => {
@@ -249,3 +257,87 @@ export const updateAuthortoAdmin = async (author: string) => {
       return Promise.reject(error)
   }
 }
+
+
+export const saveScoreTypeTest = async (scoreTypeTest: ScoreTypeTest) => {
+  try {
+    const {
+      basicInformationItem: { title, explain },
+      typeItems,
+      selectItems,
+      userId,
+      isPublic,
+      testType
+    } = scoreTypeTest;
+
+    const selectOptionItems = new SelectItemsModel({
+      _id: new mongoose.Types.ObjectId(),
+      selectItems: selectItems,
+    });
+
+    const resultItems = new ResultItemsModel({
+      _id: new mongoose.Types.ObjectId(),
+      resultItems: typeItems,
+    });
+
+    const personality = new PersonalityModel({
+      title: title,
+      explain: explain,
+      isPublic: isPublic,
+      selectItems: selectOptionItems._id,
+      resultItems: resultItems._id,
+      author: userId,
+      testType: testType,
+    });
+    
+    await Promise.all([
+      await resultItems.save(),
+      await selectOptionItems.save(),
+      await personality.save(),
+    ]);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+
+export const saveMbtiTypeTest = async (mbtiTypeTest: MbtiTypeTest) => {
+  try {
+    const {
+      basicInformationItem: { title, explain },
+      mbtiTypeItems,
+      mbtiSelectItems,
+      userId,
+      isPublic,
+      testType
+    } = mbtiTypeTest;
+
+    const mbtiSelectOptionItems = new MbtiSelectItemsModel({
+      _id: new mongoose.Types.ObjectId(),
+      selectItems: mbtiSelectItems,
+    });
+
+    const resultItems = new ResultItemsModel({
+      _id: new mongoose.Types.ObjectId(),
+      resultItems: mbtiTypeItems,
+    });
+
+    const personality = new PersonalityModel({
+      title: title,
+      explain: explain,
+      isPublic: isPublic,
+      mbtiSelectItems: mbtiSelectOptionItems._id,
+      resultItems: resultItems._id,
+      author: userId,
+      testType: testType,
+    });
+    
+    await Promise.all([
+      await mbtiSelectOptionItems.save(),
+      await resultItems.save(),
+      await personality.save(),
+    ]);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

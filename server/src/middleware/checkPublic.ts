@@ -1,7 +1,7 @@
 import express, { NextFunction } from "express";
 import { verifyAccessToken } from "../service/auth.service";
 import { getPersonalityById } from "../service/personality.service";
-import { splitEmail } from "../utils";
+import { splitEmail } from "../utils/splitEmail";
 
 interface CustomError  {
     status: number;
@@ -29,7 +29,7 @@ const checkPublic = async(req: express.Request, res: express.Response, next: Nex
             const author = splitEmail(decode.email);
 
             if(personality.author !== author) {
-                throw customError({ status: 401, error: '해당 테스트 비공개'});
+                throw customError({ status: 403, error: '해당 테스트는 접근 할 수 없음'});
             }
         }
 
@@ -37,7 +37,7 @@ const checkPublic = async(req: express.Request, res: express.Response, next: Nex
 
     } catch (error: unknown) {
         const err = error as CustomError;
-        return res.status(err.status).send();
+        return res.status(err.status).json({ success: false });
     }
 
 }

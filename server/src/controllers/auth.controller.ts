@@ -2,6 +2,7 @@
 import express, { Response } from "express";
 import { createAccessToken, findRefreshToken, verifyAccessToken, verifyRefreshToken } from "../service/auth.service";
 import dotenv from "dotenv";
+import { JwtExpiredError, JwtInvaildError } from "../errors/jwtErrors";
 dotenv.config();
 
 process.env.NODE_ENV = ( process.env.NODE_ENV && ( process.env.NODE_ENV ).trim().toLowerCase() == 'production' ) ? 'production' : 'development';
@@ -15,15 +16,24 @@ export const userAuth = async(
     
     try {
       const accessToken = req.cookies.accessToken;
-      if (!accessToken) throw new Error('accessToken 없음')
-  
+      if (!accessToken) throw new Error('accessToken 없음');
+      
+
       verifyAccessToken(accessToken);
       return res.status(200).json({ success: true });
   
     } catch (error) {
-      return res.status(401).send();
+
+      if (error instanceof JwtExpiredError) {
+        return res.status(error.statusCode).json({ success: false });
+        
+      } else if (error instanceof JwtInvaildError) {
+        return res.status(error.statusCode).json({ success: false });
+      }
+
+      return res.status(500).send();
     }
-  }
+}
   
   
   export const issueRefreshToken = async(
@@ -51,7 +61,15 @@ export const userAuth = async(
       return res.status(200).json({ success: true });
      
     } catch (error) {
-      return res.status(401).send();
+      if (error instanceof JwtExpiredError) {
+        return res.status(error.statusCode).send();
+      } else if (error instanceof JwtInvaildError) {
+        return res.clearCookie("accessToken")
+                  .clearCookie("refreshTooken")
+                  .status(error.statusCode).send();
+      }
+
+      return res.status(500).send();
     }
   
-  }
+}

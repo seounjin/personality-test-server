@@ -16,8 +16,8 @@ const auth = async(req: express.Request, res: express.Response, next: NextFuncti
         next();
 
     } catch(error) {
-        res.clearCookie("accessToken");
-        res.clearCookie("refreshToken");
+        // res.clearCookie("accessToken");
+        // res.clearCookie("refreshToken");
         return res.status(401).send();
     }
 };

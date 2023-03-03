@@ -2,7 +2,7 @@ import express, { Response } from "express";
 import { createAccessToken, createRefreshToken } from "../service/auth.service";
 import { deleteRefreshToken, deleteUserInformation, saveRefreshToken, setUserInformation, validateUser } from "../service/user.service";
 import dotenv from "dotenv";
-import { splitEmail } from "../utils";
+import { splitEmail } from "../utils/splitEmail";
 import { updateAuthortoAdmin } from "../service/personality.service";
 dotenv.config();
 
@@ -26,7 +26,7 @@ export const userSignup = async (
 
   } catch (err: unknown) {
     const error = err as UserSignupError;
-    return error.emailExistError ? res.status(409).send() : res.status(500).send();
+    return error.emailExistError ? res.status(409).json({ success: false }) : res.status(500).json({ success: false });
   }
 
 };
@@ -61,10 +61,10 @@ export const userLogin = async (
       return res.status(200).json({ success: true });
     }
 
-    return res.status(401).json({ success: false });
+    return res.status(400).json({ success: false });
 
   } catch (error) {
-    return res.status(500).send();
+    return res.status(500).json({ success: false });
   }
 
 };
@@ -79,15 +79,14 @@ export const userLogout = async (
     if (!refreshToken) throw new Error('refreshToken 없음');
     await deleteRefreshToken(refreshToken);
 
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
-
-    return res.status(200).json({ success: true });
+    return res.clearCookie("accessToken")
+              .clearCookie("refreshToken")
+              .status(200).json({ success: true });
 
   } catch (error) {
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
-    return res.status(401).send();
+    return res.clearCookie("accessToken")
+              .clearCookie("refreshToken")
+              .status(200).json({ success: false });
   }
 }
 
@@ -105,12 +104,12 @@ export const userSignout = async (
     const author = splitEmail(email);
     await updateAuthortoAdmin(author);
 
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
-    return res.status(200).json({ success: true });
+    return res.clearCookie("accessToken")
+              .clearCookie("refreshToken")
+              .status(200).json({ success: true });
 
   } catch (error) {
-   return res.status(500).send();
+   return res.status(500).json({ success: false });
 
   }
 

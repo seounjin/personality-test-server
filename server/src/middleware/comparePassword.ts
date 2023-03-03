@@ -19,7 +19,7 @@ const comparePassword = async(req: express.Request, res: express.Response, next:
         next();
 
     } catch(error) {
-        return res.status(401).send();
+        return res.status(400).json({ success: false });
     }
 };
 

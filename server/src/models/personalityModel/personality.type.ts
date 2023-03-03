@@ -9,9 +9,6 @@ export interface Personality {
   explain: string;
 }
 
-export interface PersonalityItem extends Personality {
-  items: OptionValuesToSelect[];
-}
 
 export interface OptionValuesToSelect {
   selectItems: Options[];
@@ -31,3 +28,42 @@ interface WeightedScoreItem {
   typeContent: string;
   score: number;
 }
+
+interface BasicInformationItem {
+  title: string;
+  explain: string;
+}
+
+export interface BasePersonalityTest {
+  basicInformationItem: BasicInformationItem;
+  isPublic: boolean
+  testType: string;
+  userId: string;
+}
+
+export interface ScoreTypeTest extends BasePersonalityTest{
+  typeItems: ResultItem[];
+  selectItems: OptionValuesToSelect[];
+}
+
+
+interface RadioButtonItems {
+  text: string;
+  boolean: boolean;
+  id: string;
+  htmlFor: string;
+}
+
+
+interface mbtiOptions extends Options {
+  radioButtonIndex: string;
+  radioButtonItems: RadioButtonItems[];
+}
+
+
+export interface MbtiTypeTest extends BasePersonalityTest{
+  mbtiTypeItems: ResultItem[];
+  mbtiSelectItems: mbtiOptions[];
+}
+
+
