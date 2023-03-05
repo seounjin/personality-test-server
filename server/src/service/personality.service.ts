@@ -12,7 +12,7 @@ import {
   ResultItem,
   ScoreTypeTest,
 } from "../models/personalityModel/personality.type";
-import { detailPersonalityItemsLookup } from "../utils/aggregation";
+import { detailPersonalityItemsLookup, getPersonalityItemLookup, getPersonalityItemProject, personalityItemLookupByScoreType } from "../utils/aggregation";
 
 interface BasicInformationItem {
   title: string;
@@ -42,36 +42,21 @@ export const getAllPersonalityItems = async (): Promise<Personality[]> => {
   }
 };
 
-export const getPersonalityItemById = async (
-  id: number
+// 수정중
+export const getPersonalityItemByIdandTestType = async (
+  id: number,
+  testType: string
 ): Promise<PersonalityItem> => {
+
   try {
     const res = await PersonalityModel.aggregate([
       {
         $match: { id: id },
       },
-      {
-        $lookup: {
-          from: "selectitems",
-          let: { selectItemsId: "$selectItems" },
-          pipeline: [
-            { $match: { $expr: { $eq: ["$_id", "$$selectItemsId"] } } },
-            { $project: { _id: 0 } },
-          ],
-          as: "items",
-        },
-      },
-
-      {
-        $project: {
-          _id: 0,
-          id: 1,
-          title: 1,
-          explain: 1,
-          items: 1,
-        },
-      },
+      ...getPersonalityItemLookup(testType),
+      ...getPersonalityItemProject(),
     ]);
+    
     return res[0];
   } catch (error) {
     return Promise.reject(error);

@@ -1,7 +1,7 @@
 import express, { Response } from "express";
 import {
   getAllPersonalityItems,
-  getPersonalityItemById,
+  getPersonalityItemByIdandTestType,
   getPersonalityTestResultByType,
   getMyPersonalityItemsByAuthor,
   getDetailPersonalityItemsByIdAndTestType,
@@ -28,8 +28,21 @@ export const getPersonalityItem = async (
   res: express.Response
 ): Promise<Response> => {
   const id = parseInt(req.params.id);
-  const data = await getPersonalityItemById(id);
-  return res.status(200).json({ data: data });
+  const testType = req.query.test;
+
+  try {
+    if (typeof testType !== "string") {
+      throw new Error("testType string 타입이 아님");
+    }
+
+    const data = await getPersonalityItemByIdandTestType(id, testType);
+
+    return res.status(200).json({ success: true, data: data });
+
+  } catch (error) {
+    // 해당 오류 처리하기~~~~~
+    return res.status(404).json({ success: false });
+  }
 };
 
 export const getPersonalityTestResult = async (
