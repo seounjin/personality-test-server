@@ -13,6 +13,7 @@ import {
   ScoreTypeTest,
 } from "../models/personalityModel/personality.type";
 import { detailPersonalityItemsLookup, getPersonalityItemLookup, getPersonalityItemProject, personalityItemLookupByScoreType } from "../utils/aggregation";
+import { NotFoundError } from "../errors/errorhandler";
 
 interface BasicInformationItem {
   title: string;
@@ -42,7 +43,6 @@ export const getAllPersonalityItems = async (): Promise<Personality[]> => {
   }
 };
 
-// 수정중
 export const getPersonalityItemByIdandTestType = async (
   id: number,
   testType: string
@@ -66,7 +66,7 @@ export const getPersonalityItemByIdandTestType = async (
 export const getPersonalityById = async (id: number) => {
 
   const personality = await PersonalityModel.findOne({ id: id });   
-  if (!personality) return Promise.reject({ status: 404, error: 'id에 해당하는 성향테스트 데이터가 없음' });
+  if (!personality) throw new NotFoundError('id에 해당하는 성향테스트 데이터가 없음');
   return personality;
 }
 

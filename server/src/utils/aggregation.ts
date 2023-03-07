@@ -144,6 +144,7 @@ export const getPersonalityItemProject = () => [
       id: 1,
       author: 1,
       testType: 1,
+      isPublic: 1,
       selectItems: '$selectItems.selectItems',
       _id: 0,
     },

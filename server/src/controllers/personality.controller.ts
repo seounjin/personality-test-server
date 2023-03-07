@@ -1,4 +1,5 @@
 import express, { Response } from "express";
+import { BadRequestError } from "../errors/errorhandler";
 import {
   getAllPersonalityItems,
   getPersonalityItemByIdandTestType,
@@ -32,7 +33,7 @@ export const getPersonalityItem = async (
 
   try {
     if (typeof testType !== "string") {
-      throw new Error("testType string 타입이 아님");
+      throw new BadRequestError("testType string 타입이 아님");
     }
 
     const data = await getPersonalityItemByIdandTestType(id, testType);
@@ -40,8 +41,10 @@ export const getPersonalityItem = async (
     return res.status(200).json({ success: true, data: data });
 
   } catch (error) {
-    // 해당 오류 처리하기~~~~~
-    return res.status(404).json({ success: false });
+    if (error instanceof BadRequestError) {
+      return res.status(error.statusCode).json({ success: false });
+  }
+    return res.status(500).json({ success: false });
   }
 };
 
