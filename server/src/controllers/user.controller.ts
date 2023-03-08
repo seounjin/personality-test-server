@@ -4,15 +4,11 @@ import { deleteRefreshToken, deleteUserInformation, saveRefreshToken, setUserInf
 import dotenv from "dotenv";
 import { splitEmail } from "../utils/splitEmail";
 import { updateAuthortoAdmin } from "../service/personality.service";
+import { BadParameterException, ConflictError } from "../errors/errorhandler";
 dotenv.config();
 
 process.env.NODE_ENV = ( process.env.NODE_ENV && ( process.env.NODE_ENV ).trim().toLowerCase() == 'production' ) ? 'production' : 'development';
 const secure = process.env.NODE_ENV === 'production' ? true : false;
-
-interface UserSignupError {
-  emailExistError: boolean,
-  error: string
-}
 
 export const userSignup = async (
   { body }: express.Request,
@@ -24,9 +20,11 @@ export const userSignup = async (
     await setUserInformation(data);
     return res.status(201).json({ success: true });
 
-  } catch (err: unknown) {
-    const error = err as UserSignupError;
-    return error.emailExistError ? res.status(409).json({ success: false }) : res.status(500).json({ success: false });
+  } catch (error) {
+    if (error instanceof ConflictError){
+      return res.status(409).json({ success: false })
+    }
+    return res.status(500).json({ success: false });
   }
 
 };
@@ -61,9 +59,12 @@ export const userLogin = async (
       return res.status(200).json({ success: true });
     }
 
-    return res.status(400).json({ success: false });
+    throw new BadParameterException('아이디 혹은 비밀번호 불일치');
 
   } catch (error) {
+    if (error instanceof BadParameterException){
+      return res.status(400).json({ success: false });
+    }
     return res.status(500).json({ success: false });
   }
 

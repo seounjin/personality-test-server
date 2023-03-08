@@ -10,7 +10,7 @@ export const createAccessToken = (email: string):string => {
     const token = jwt.sign(
         { email },
         process.env.JWT_ACCESS_TOKEN_SECRET_KEY ?? '',
-        { expiresIn: "2h" }
+        { expiresIn: "60s" }
     );
 
     return token;

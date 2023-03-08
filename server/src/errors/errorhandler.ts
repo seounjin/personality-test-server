@@ -42,5 +42,22 @@ export class NotFoundError extends CustomError {
 }
 
 
+export class BadParameterException extends CustomError {
+    statusCode: number = 400;
+    constructor(message: string) {
+        super(message);
+        this.message = message; 
+        Object.setPrototypeOf(this, BadParameterException.prototype);
+    }
+}
 
+
+export class ConflictError extends CustomError {
+    statusCode: number = 409;
+    constructor(message: string) {
+        super(message);
+        this.message = message; 
+        Object.setPrototypeOf(this, ConflictError.prototype);
+    }
+}
 

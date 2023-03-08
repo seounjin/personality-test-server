@@ -13,7 +13,7 @@ import {
   ScoreTypeTest,
 } from "../models/personalityModel/personality.type";
 import { detailPersonalityItemsLookup, getPersonalityItemLookup, getPersonalityItemProject, personalityItemLookupByScoreType } from "../utils/aggregation";
-import { NotFoundError } from "../errors/errorhandler";
+import { BadParameterException, NotFoundError } from "../errors/errorhandler";
 
 interface BasicInformationItem {
   title: string;
@@ -112,7 +112,13 @@ export const getPersonalityTestResultByType = async (
         },
       },
     ]);
+
+    if (!res.length) {
+      throw new BadParameterException('id 혹은 type이 일치하지 않음');
+    }
+    
     return res[0];
+
   } catch (error) {
     return Promise.reject(error);
   }

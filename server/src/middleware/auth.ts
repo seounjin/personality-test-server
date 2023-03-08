@@ -7,7 +7,6 @@ const auth = async(req: express.Request, res: express.Response, next: NextFuncti
     const accessToken = req.cookies.accessToken;
 
     try {
-
         if (!accessToken){
             throw new Error('accessToken 없음');
         }
@@ -16,8 +15,6 @@ const auth = async(req: express.Request, res: express.Response, next: NextFuncti
         next();
 
     } catch(error) {
-        // res.clearCookie("accessToken");
-        // res.clearCookie("refreshToken");
         return res.status(401).send();
     }
 };

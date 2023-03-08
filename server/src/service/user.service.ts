@@ -2,6 +2,7 @@ import { UserModel } from "../models/userModel/user.model";
 import {
     mongoose
   } from "@typegoose/typegoose";
+import { ConflictError } from "../errors/errorhandler";
 
 interface UserInformation {
     email: string;
@@ -16,18 +17,12 @@ interface SetUserItemsReturn {
 
 export const setUserInformation = async(data: UserInformation): Promise<SetUserItemsReturn> => {
     const { email, password } = data;
-  
-    try {
-        const res = await UserModel.findOne({ email: email });
-        if(res){
-            return Promise.reject({ emailExistError: true, errorMessage:'이미 이메일 존재함' });
-        }
-        const user = new UserModel({ email, password });
-        return await user.save();
-
-    } catch (error) {
-        return Promise.reject({ emailExistError: false, error });
+    const res = await UserModel.findOne({ email: email });
+    if(res) {
+        throw new ConflictError('이미 이메일이 존재함');
     }
+    const user = new UserModel({ email, password });
+    return await user.save();
 }
 
 

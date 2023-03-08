@@ -40,8 +40,7 @@ export const userAuth = async(
     req: express.Request,
     res: express.Response
   ): Promise<Response> => {
-  
-    try {
+        try {
   
       const refreshToken = req.cookies.refreshToken;
       if (!refreshToken) throw new Error('refreshToken 없음');

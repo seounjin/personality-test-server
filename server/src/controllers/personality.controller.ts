@@ -1,5 +1,5 @@
 import express, { Response } from "express";
-import { BadRequestError } from "../errors/errorhandler";
+import { BadParameterException, BadRequestError } from "../errors/errorhandler";
 import {
   getAllPersonalityItems,
   getPersonalityItemByIdandTestType,
@@ -58,6 +58,9 @@ export const getPersonalityTestResult = async (
     const data = await getPersonalityTestResultByType(id, type);
     return res.status(200).json({ success: true, data });
   } catch (error) {
+    if (error instanceof BadParameterException) {
+      return res.status(400).json({ success: false });
+    }
     return res.status(500).json({ success: false });
   }
 };
@@ -69,7 +72,7 @@ export const getMyPersonalityTest = async (
   const userId = splitEmail(req.user);
   try {
     const data = await getMyPersonalityItemsByAuthor(userId);
-    return res.status(200).json({ success: true , data: data, user: req.user });
+    return res.status(200).json({ success: true , data, user: req.user });
   } catch (error) {
     return res.status(500).json({ success: false });
   }
