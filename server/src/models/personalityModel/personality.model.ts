@@ -72,6 +72,9 @@ class Personality {
   title: string;
 
   @prop({ required: true })
+  subTitle: string;
+
+  @prop({ required: true })
   explain: string;
 
   @prop({ required: true })

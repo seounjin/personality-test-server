@@ -17,6 +17,7 @@ import { BadParameterException, NotFoundError } from "../errors/errorhandler";
 
 interface BasicInformationItem {
   title: string;
+  subTitle: string;
   explain: string;
 }
 
@@ -198,7 +199,7 @@ export const getDetailPersonalityItemsByIdAndTestType = async (id: number, testT
 export const updateScoreTypeItemsById =  async (scoreTypeTestItems: PersonalityItem, id: number) => {
 
   const {
-    basicInformationItem: { title, explain },
+    basicInformationItem: { title, subTitle, explain },
     typeItems,
     selectItems,
     isPublic,
@@ -206,7 +207,7 @@ export const updateScoreTypeItemsById =  async (scoreTypeTestItems: PersonalityI
 
   try {
 
-    const personality = await PersonalityModel.findOneAndUpdate({ id: id }, {$set: { title: title, explain: explain, isPublic: isPublic }}).exec();   
+    const personality = await PersonalityModel.findOneAndUpdate({ id: id }, {$set: { title: title, subTitle: subTitle, explain: explain, isPublic: isPublic }}).exec();   
     if (!personality) return Promise.reject('찾으려는 문서가 없음');
 
     await SelectItemsModel.findOneAndUpdate({ _id: personality.selectItems }, {$set: { selectItems: selectItems}}).exec();   
@@ -220,7 +221,7 @@ export const updateScoreTypeItemsById =  async (scoreTypeTestItems: PersonalityI
 export const updateMbtiTypeItemsById =  async (mbtiTypeTestItems: MbtiTypeTest, id: number) => {
 
   const {
-    basicInformationItem: { title, explain },
+    basicInformationItem: { title, subTitle, explain },
     mbtiTypeItems,
     mbtiSelectItems,
     isPublic,
@@ -228,7 +229,7 @@ export const updateMbtiTypeItemsById =  async (mbtiTypeTestItems: MbtiTypeTest, 
 
   try {
 
-    const personality = await PersonalityModel.findOneAndUpdate({ id: id }, {$set: { title: title, explain: explain, isPublic: isPublic }}).exec();   
+    const personality = await PersonalityModel.findOneAndUpdate({ id: id }, {$set: { title: title, subTitle:subTitle, explain: explain, isPublic: isPublic }}).exec();   
     if (!personality) return Promise.reject('찾으려는 문서가 없음');
 
     await MbtiSelectItemsModel.findOneAndUpdate({ _id: personality.selectItems }, {$set: { selectItems: mbtiSelectItems}}).exec();   
@@ -253,7 +254,7 @@ export const updateAuthortoAdmin = async (author: string) => {
 export const saveScoreTypeTest = async (scoreTypeTest: ScoreTypeTest) => {
   try {
     const {
-      basicInformationItem: { title, explain },
+      basicInformationItem: { title, subTitle, explain },
       typeItems,
       selectItems,
       userId,
@@ -273,6 +274,7 @@ export const saveScoreTypeTest = async (scoreTypeTest: ScoreTypeTest) => {
 
     const personality = new PersonalityModel({
       title: title,
+      subTitle: subTitle,
       explain: explain,
       isPublic: isPublic,
       selectItems: selectOptionItems._id,
@@ -295,7 +297,7 @@ export const saveScoreTypeTest = async (scoreTypeTest: ScoreTypeTest) => {
 export const saveMbtiTypeTest = async (mbtiTypeTest: MbtiTypeTest) => {
   try {
     const {
-      basicInformationItem: { title, explain },
+      basicInformationItem: { title, subTitle, explain },
       mbtiTypeItems,
       mbtiSelectItems,
       userId,
@@ -315,6 +317,7 @@ export const saveMbtiTypeTest = async (mbtiTypeTest: MbtiTypeTest) => {
 
     const personality = new PersonalityModel({
       title: title,
+      subTitle: subTitle,
       explain: explain,
       isPublic: isPublic,
       mbtiSelectItems: mbtiSelectOptionItems._id,

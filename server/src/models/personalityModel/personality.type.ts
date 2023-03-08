@@ -31,6 +31,7 @@ interface WeightedScoreItem {
 
 interface BasicInformationItem {
   title: string;
+  subTitle: string;
   explain: string;
 }
 

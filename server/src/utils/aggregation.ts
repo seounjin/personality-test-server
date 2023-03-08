@@ -32,7 +32,7 @@ export const detailPersonalityItemsLookup = (testType: string) => [
     },
     {
       $project: {
-        basicInformationItems: { title: '$title', explain: '$explain' },
+        basicInformationItems: { title: '$title', subTitle: '$subTitle', explain: '$explain' },
         author: 1,
         isPublic: 1,
         testType: 1,
@@ -60,7 +60,7 @@ export const detailPersonalityItemsLookup = (testType: string) => [
     },
     {
       $project: {
-        basicInformationItems: { title: '$title', explain: '$explain' },
+        basicInformationItems: { title: '$title', subTitle: '$subTitle', explain: '$explain' },
         author: 1,
         testType: 1,
         selectItems: '$selectItems.selectItems',
@@ -83,7 +83,7 @@ export const detailPersonalityItemsLookup = (testType: string) => [
     },
     {
       $project: {
-        basicInformationItems: { title: '$title', explain: '$explain' },
+        basicInformationItems: { title: '$title', subTitle: '$subTitle', explain: '$explain' },
         id: 1,
         author: 1,
         testType: 1,
@@ -140,7 +140,7 @@ export const getPersonalityItemLookup = (testType: string) => {
 export const getPersonalityItemProject = () => [
   {
     $project: {
-      basicInformationItems: { title: '$title', explain: '$explain' },
+      basicInformationItems: { title: '$title', subTitle: '$subTitle', explain: '$explain' },
       id: 1,
       author: 1,
       testType: 1,
