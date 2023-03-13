@@ -18,3 +18,12 @@ export class JwtInvaildError extends CustomError {
         Object.setPrototypeOf(this, JwtInvaildError.prototype);
     }
 }
+
+export class JwtNotFound extends CustomError {
+    statusCode: number = 401
+    constructor(message: string) {
+        super(message);
+        this.message = message; 
+        Object.setPrototypeOf(this, JwtNotFound.prototype);
+    }
+}

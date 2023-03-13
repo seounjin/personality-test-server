@@ -2,7 +2,8 @@
 import express, { Response } from "express";
 import { createAccessToken, findRefreshToken, verifyAccessToken, verifyRefreshToken } from "../service/auth.service";
 import dotenv from "dotenv";
-import { JwtExpiredError, JwtInvaildError } from "../errors/jwtErrors";
+import { JwtExpiredError, JwtInvaildError, JwtNotFound } from "../errors/jwtErrors";
+import { splitEmail } from "../utils/splitEmail";
 dotenv.config();
 
 process.env.NODE_ENV = ( process.env.NODE_ENV && ( process.env.NODE_ENV ).trim().toLowerCase() == 'production' ) ? 'production' : 'development';
@@ -16,11 +17,11 @@ export const userAuth = async(
     
     try {
       const accessToken = req.cookies.accessToken;
-      if (!accessToken) throw new Error('accessToken 없음');
+      if (!accessToken) throw new JwtNotFound('accessToken 없음');
       
 
-      verifyAccessToken(accessToken);
-      return res.status(200).json({ success: true });
+      const decode = verifyAccessToken(accessToken);
+      return res.status(200).json({ success: true, data: {userId: splitEmail(decode.email)} });
   
     } catch (error) {
 
@@ -29,7 +30,10 @@ export const userAuth = async(
         
       } else if (error instanceof JwtInvaildError) {
         return res.status(error.statusCode).json({ success: false });
-      }
+
+      } else if (error instanceof JwtNotFound) {
+        return res.status(error.statusCode).json({ success: false }); 
+    }
 
       return res.status(500).send();
     }
