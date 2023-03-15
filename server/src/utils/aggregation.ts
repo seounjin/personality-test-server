@@ -36,6 +36,7 @@ export const detailPersonalityItemsLookup = (testType: string) => [
         author: 1,
         isPublic: 1,
         testType: 1,
+        thumbnailImgUrl: 1,
         selectItems: '$selectItems.selectItems',
         resultItems: '$resultItems.resultItems',
         _id: 0,

@@ -13,7 +13,11 @@ import {
   deleteScoreTypeTestById,
   deleteMbtiTypeTestById,
 } from "../service/personality.service";
+import { uploadImageFile } from "../utils/imageUpload";
+import { parseTestItems } from "../utils/parseTestItems";
 import { splitEmail } from "../utils/splitEmail";
+
+process.env.NODE_ENV = ( process.env.NODE_ENV && ( process.env.NODE_ENV ).trim().toLowerCase() == 'production' ) ? 'production' : 'development';
 
 
 export const getPersonality = async (
@@ -127,14 +131,18 @@ export const updateScoreTestType   = async (
   res: express.Response
 ): Promise<Response> => {
   const { data } = req.body;
-
-  const personalityItem = {...data, userId: splitEmail(req.user) };
-
-  const id = parseInt(req.params.id);
-
+  
   try {
-    await updateScoreTypeItemsById(personalityItem, id);
+    const filename = data.isChangeImage
+    ? await uploadImageFile(data.basicInformationItem.imageData)
+    : data.thumbnailImgUrl;
+    
+    const scoreTypeTest = parseTestItems(data, splitEmail(req.user), filename);
+    const id = parseInt(req.params.id);
+
+    await updateScoreTypeItemsById(scoreTypeTest, id);
     return res.status(200).json({ success: true });  
+
   } catch (error) {
     return res.status(500).json({ success: false });  
   }
@@ -146,12 +154,16 @@ export const updateMbtiTestType   = async (
 ): Promise<Response> => {
   const { data } = req.body;
 
-  const personalityItem = {...data, userId: splitEmail(req.user) };
-
-  const id = parseInt(req.params.id);
 
   try {
-    await updateMbtiTypeItemsById(personalityItem, id);
+    const filename = data.isChangeImage
+    ? await uploadImageFile(data.basicInformationItem.imageData)
+    : data.thumbnailImgUrl;
+
+  const mbtiTypeTest = parseTestItems(data, splitEmail(req.user), filename);
+
+  const id = parseInt(req.params.id);
+    await updateMbtiTypeItemsById(mbtiTypeTest, id);
     return res.status(200).json({ success: true });  
   } catch (error) {
     return res.status(500).json({ success: false });  
@@ -164,9 +176,14 @@ export const setScoreTypeTest = async (
 ): Promise<Response> => {
   const { data } = req.body;
 
-  const scoreTypeTest = {...data, userId: splitEmail(req.user) };
-
   try {
+    const filename = data.isChangeImage
+    ? await uploadImageFile(data.basicInformationItem.imageData)
+    : data.thumbnailImgUrl;
+
+    const scoreTypeTest = parseTestItems(data, splitEmail(req.user), filename);
+    
+    
     await saveScoreTypeTest(scoreTypeTest);
     return res.status(201).json({ success: true });    
   } catch (error) {
@@ -180,9 +197,15 @@ export const setMbtiTypeTest = async (
 ): Promise<Response> => {
   const { data } = req.body;
 
-  const mbtiTypeTest = {...data, userId: splitEmail(req.user) };
 
   try {
+
+    const filename = data.isChangeImage
+    ? await uploadImageFile(data.basicInformationItem.imageData)
+    : data.thumbnailImgUrl;
+
+    const mbtiTypeTest = parseTestItems(data, splitEmail(req.user), filename);
+
     await saveMbtiTypeTest(mbtiTypeTest);
     return res.status(201).json({ success: true });    
   } catch (error) {

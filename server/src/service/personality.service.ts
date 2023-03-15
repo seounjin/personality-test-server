@@ -15,21 +15,6 @@ import {
 import { detailPersonalityItemsLookup, getPersonalityItemLookup, getPersonalityItemProject, personalityItemLookupByScoreType } from "../utils/aggregation";
 import { BadParameterException, NotFoundError } from "../errors/errorhandler";
 
-interface BasicInformationItem {
-  title: string;
-  subTitle: string;
-  explain: string;
-}
-
-interface PersonalityItem {
-  basicInformationItem: BasicInformationItem;
-  typeItems: ResultItem[];
-  selectItems: OptionValuesToSelect[];
-  userId: string;
-  isPublic: boolean
-  testType: string;
-}
-
 
 export const getAllPersonalityItems = async (): Promise<Personality[]> => {
   try {
@@ -47,7 +32,7 @@ export const getAllPersonalityItems = async (): Promise<Personality[]> => {
 export const getPersonalityItemByIdandTestType = async (
   id: number,
   testType: string
-): Promise<PersonalityItem> => {
+) => {
 
   try {
     const res = await PersonalityModel.aggregate([
@@ -195,50 +180,83 @@ export const getDetailPersonalityItemsByIdAndTestType = async (id: number, testT
 
 }
 
-
-export const updateScoreTypeItemsById =  async (scoreTypeTestItems: PersonalityItem, id: number) => {
-
+export const updateScoreTypeItemsById = async (
+  scoreTypeTestItems: ScoreTypeTest,
+  id: number,
+) => {
   const {
-    basicInformationItem: { title, subTitle, explain },
+    basicInformationItem: { title, subTitle, explain, thumbnailImgUrl },
     typeItems,
     selectItems,
     isPublic,
   } = scoreTypeTestItems;
 
   try {
-
-    const personality = await PersonalityModel.findOneAndUpdate({ id: id }, {$set: { title: title, subTitle: subTitle, explain: explain, isPublic: isPublic }}).exec();   
+    const personality = await PersonalityModel.findOneAndUpdate(
+      { id: id },
+      {
+        $set: {
+          title: title,
+          subTitle: subTitle,
+          explain: explain,
+          thumbnailImgUrl: thumbnailImgUrl,
+          isPublic: isPublic,
+        },
+      },
+    ).exec();
     if (!personality) return Promise.reject('찾으려는 문서가 없음');
 
-    await SelectItemsModel.findOneAndUpdate({ _id: personality.selectItems }, {$set: { selectItems: selectItems}}).exec();   
-    await ResultItemsModel.findOneAndUpdate({ _id: personality.resultItems }, {$set: { resultItems: typeItems}}).exec();   
-    
+    await SelectItemsModel.findOneAndUpdate(
+      { _id: personality.selectItems },
+      { $set: { selectItems: selectItems } },
+    ).exec();
+    await ResultItemsModel.findOneAndUpdate(
+      { _id: personality.resultItems },
+      { $set: { resultItems: typeItems } },
+    ).exec();
   } catch (error) {
     return Promise.reject(error);
   }
-}
+};
 
-export const updateMbtiTypeItemsById =  async (mbtiTypeTestItems: MbtiTypeTest, id: number) => {
-
+export const updateMbtiTypeItemsById = async (
+  mbtiTypeTestItems: MbtiTypeTest,
+  id: number,
+) => {
   const {
-    basicInformationItem: { title, subTitle, explain },
+    basicInformationItem: { title, subTitle, explain, thumbnailImgUrl },
     mbtiTypeItems,
     mbtiSelectItems,
     isPublic,
   } = mbtiTypeTestItems;
 
   try {
-
-    const personality = await PersonalityModel.findOneAndUpdate({ id: id }, {$set: { title: title, subTitle:subTitle, explain: explain, isPublic: isPublic }}).exec();   
+    const personality = await PersonalityModel.findOneAndUpdate(
+      { id: id },
+      {
+        $set: {
+          title: title,
+          subTitle: subTitle,
+          explain: explain,
+          thumbnailImgUrl: thumbnailImgUrl,
+          isPublic: isPublic,
+        },
+      },
+    ).exec();
     if (!personality) return Promise.reject('찾으려는 문서가 없음');
 
-    await MbtiSelectItemsModel.findOneAndUpdate({ _id: personality.selectItems }, {$set: { selectItems: mbtiSelectItems}}).exec();   
-    await ResultItemsModel.findOneAndUpdate({ _id: personality.resultItems }, {$set: { resultItems: mbtiTypeItems}}).exec();   
-    
+    await MbtiSelectItemsModel.findOneAndUpdate(
+      { _id: personality.selectItems },
+      { $set: { selectItems: mbtiSelectItems } },
+    ).exec();
+    await ResultItemsModel.findOneAndUpdate(
+      { _id: personality.resultItems },
+      { $set: { resultItems: mbtiTypeItems } },
+    ).exec();
   } catch (error) {
     return Promise.reject(error);
   }
-}
+};
 
 export const updateAuthortoAdmin = async (author: string) => {
 
@@ -254,12 +272,12 @@ export const updateAuthortoAdmin = async (author: string) => {
 export const saveScoreTypeTest = async (scoreTypeTest: ScoreTypeTest) => {
   try {
     const {
-      basicInformationItem: { title, subTitle, explain },
+      basicInformationItem: { title, subTitle, explain, thumbnailImgUrl },
       typeItems,
       selectItems,
       userId,
       isPublic,
-      testType
+      testType,
     } = scoreTypeTest;
 
     const selectOptionItems = new SelectItemsModel({
@@ -281,6 +299,7 @@ export const saveScoreTypeTest = async (scoreTypeTest: ScoreTypeTest) => {
       resultItems: resultItems._id,
       author: userId,
       testType: testType,
+      thumbnailImgUrl:thumbnailImgUrl
     });
     
     await Promise.all([
@@ -297,12 +316,12 @@ export const saveScoreTypeTest = async (scoreTypeTest: ScoreTypeTest) => {
 export const saveMbtiTypeTest = async (mbtiTypeTest: MbtiTypeTest) => {
   try {
     const {
-      basicInformationItem: { title, subTitle, explain },
+      basicInformationItem: { title, subTitle, explain, thumbnailImgUrl },
       mbtiTypeItems,
       mbtiSelectItems,
       userId,
       isPublic,
-      testType
+      testType,
     } = mbtiTypeTest;
 
     const mbtiSelectOptionItems = new MbtiSelectItemsModel({
@@ -324,6 +343,7 @@ export const saveMbtiTypeTest = async (mbtiTypeTest: MbtiTypeTest) => {
       resultItems: resultItems._id,
       author: userId,
       testType: testType,
+      thumbnailImgUrl: thumbnailImgUrl,
     });
     
     await Promise.all([

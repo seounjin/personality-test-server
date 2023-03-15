@@ -86,6 +86,9 @@ class Personality {
   @prop({ required: true })
   testType: string;
 
+  @prop({ required: true })
+  thumbnailImgUrl: string;
+
   @prop({ ref: SelectItems })
   selectItems?: Ref<SelectItems>;
 

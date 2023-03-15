@@ -33,6 +33,7 @@ interface BasicInformationItem {
   title: string;
   subTitle: string;
   explain: string;
+  thumbnailImgUrl: string;
 }
 
 export interface BasePersonalityTest {
