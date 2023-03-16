@@ -80,3 +80,18 @@ export const deleteUserInformation = async (email: string) => {
     }
 
 }
+
+interface UserItem {
+    email: string;
+    password: string;
+    refreshToken: string;
+}
+
+export const findUserInformationByEmail = async (email: string): Promise<UserItem | null> => {
+
+    try {
+        return await UserModel.findOne({ email: email });
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}

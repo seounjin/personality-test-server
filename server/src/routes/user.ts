@@ -1,5 +1,6 @@
 import { userLogin, userLogout, userSignout, userSignup } from "../controllers/user.controller";
 import auth from "../middleware/auth";
+import checkDuplicateLogin from "../middleware/checkDuplicateLogin";
 import comparePassword from "../middleware/comparePassword";
 import { CustomRoute, METHOD } from "../types";
 
@@ -14,7 +15,7 @@ const userRoute: CustomRoute[] = [
     {
       method: METHOD.POST,
       route: "/api/v1/user/login",
-      handler: userLogin,
+      handler: [checkDuplicateLogin, userLogin],
     },
 
     {
