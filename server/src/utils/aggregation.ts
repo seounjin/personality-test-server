@@ -2,16 +2,34 @@
 
 type TestTypeDIc = Record<string, Record<string, string>>;
 
+
 const TEST_TYPE_DIC: TestTypeDIc = {
-    score: { resultItemsFrom: 'resultitems', selectItemsFrom: 'selectitems', selectItemsLocalField:  'selectItems'},
-    mbti: { resultItemsFrom: 'resultitems', selectItemsFrom: 'mbtiselectitems',  selectItemsLocalField: 'mbtiSelectItems'},
+  score: {
+    resultItemsFrom: 'resultitems',
+    selectItemsFrom: 'selectitems',
+    selectItemsLocalField: 'selectItems',
+    resultItemsLocalField: 'resultItems',
+  },
+  mbti: {
+    resultItemsFrom: 'resultitems',
+    selectItemsFrom: 'mbtiselectitems',
+    selectItemsLocalField: 'mbtiSelectItems',
+    resultItemsLocalField: 'resultItems',
+  },
+  'true-or-false': {
+    resultItemsFrom: 'trueorfalseresultitems',
+    selectItemsFrom: 'trueorfalseselectitems',
+    selectItemsLocalField: 'trueOrFalseSelectItems',
+    resultItemsLocalField: 'trueOrFalseResultItems',
+  },
 };
+
 
 export const detailPersonalityItemsLookup = (testType: string) => [
     {
       $lookup: {
         from: TEST_TYPE_DIC[testType].resultItemsFrom,
-        localField: 'resultItems',
+        localField: TEST_TYPE_DIC[testType].resultItemsLocalField,
         foreignField: '_id',
         as: 'resultItems',
       },

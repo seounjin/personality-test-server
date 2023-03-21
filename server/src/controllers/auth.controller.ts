@@ -61,7 +61,8 @@ export const userAuth = async(
           secure: secure,
           maxAge: 24 * 60 * 60 * 1000, 
         });
-      return res.status(200).json({ success: true });
+      
+      return res.status(200).json({ success: true, data: {userId: splitEmail(email)} });
      
     } catch (error) {
       if (error instanceof JwtExpiredError) {

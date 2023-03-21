@@ -9,9 +9,12 @@ import {
   updateScoreTypeItemsById,
   saveScoreTypeTest,
   saveMbtiTypeTest,
-  updateMbtiTypeItemsById,
+  updateMbtiResultItemsById,
   deleteScoreTypeTestById,
   deleteMbtiTypeTestById,
+  saveTrueOrFalseTypeTest,
+  deleteTrueOrFalseTypeTestById,
+  updateTrueOrFalseTestItemsById,
 } from "../service/personality.service";
 import { uploadImageFile } from "../utils/imageUpload";
 import { parseTestItems } from "../utils/parseTestItems";
@@ -110,6 +113,21 @@ export const deleteMbtiTypeTest  = async (
   }
 };
 
+export const deleteTrueOrFalseTypeTest  = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => {
+  const id = parseInt(req.params.id);
+
+  try {
+    await deleteTrueOrFalseTypeTestById(id);
+    
+    return res.status(200).json({ success: true });  
+  } catch (error) {
+    return res.status(500).json({ success: false });  
+  }
+};
+
 
 export const getDetailPersonalityItems  = async (
   req: express.Request,
@@ -163,12 +181,36 @@ export const updateMbtiTestType   = async (
   const mbtiTypeTest = parseTestItems(data, splitEmail(req.user), filename);
 
   const id = parseInt(req.params.id);
-    await updateMbtiTypeItemsById(mbtiTypeTest, id);
+    await updateMbtiResultItemsById(mbtiTypeTest, id);
     return res.status(200).json({ success: true });  
   } catch (error) {
     return res.status(500).json({ success: false });  
   }
 };
+
+
+export const updateTrueOrFalseTestType   = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => {
+  const { data } = req.body;
+
+
+  try {
+    const filename = data.isChangeImage
+    ? await uploadImageFile(data.basicInformationItem.imageData)
+    : data.thumbnailImgUrl;
+
+  const trueOrFalseTypeTest = parseTestItems(data, splitEmail(req.user), filename);
+
+  const id = parseInt(req.params.id);
+    await updateTrueOrFalseTestItemsById(trueOrFalseTypeTest, id);
+    return res.status(200).json({ success: true });  
+  } catch (error) {
+    return res.status(500).json({ success: false });  
+  }
+};
+
 
 export const setScoreTypeTest = async (
   req: express.Request,
@@ -182,7 +224,6 @@ export const setScoreTypeTest = async (
     : data.thumbnailImgUrl;
 
     const scoreTypeTest = parseTestItems(data, splitEmail(req.user), filename);
-    
     
     await saveScoreTypeTest(scoreTypeTest);
     return res.status(201).json({ success: true });    
@@ -212,3 +253,29 @@ export const setMbtiTypeTest = async (
     return res.status(500).json({ success: false }); 
   }
 };
+
+// 저장
+export const setTrueOrFalseTypeTest = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => {
+  const { data } = req.body;
+
+
+  try {
+
+    const filename = data.isChangeImage
+    ? await uploadImageFile(data.basicInformationItem.imageData)
+    : data.thumbnailImgUrl;
+
+    const trueOrFalseTypeTest = parseTestItems(data, splitEmail(req.user), filename);
+    
+    await saveTrueOrFalseTypeTest(trueOrFalseTypeTest);
+
+    return res.status(201).json({ success: true });    
+  } catch (error) {
+    return res.status(500).json({ success: false }); 
+  }
+};
+
+// 수정

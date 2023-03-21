@@ -6,6 +6,7 @@ import {
   getModelForClass,
   Ref,
 } from "@typegoose/typegoose";
+import { TrueOrFalseResultItems, TrueOrFalseSelectItems } from "./trueOrFalseTest.model";
 
 class SelectItems {
   @prop({ required: true })
@@ -19,7 +20,7 @@ class SelectItems {
         optionItems: [
           {
             option: String;
-            weightedScoreItems: [{ typeContent: String; score: Number }];
+            weightedScoreItems: [{ resultContent: String; score: Number }];
           }
         ];
       }
@@ -39,7 +40,7 @@ class MbtiSelectItems {
         optionItems: [
           {
             option: String;
-            weightedScoreItems: [{ typeContent: String; score: Number }];
+            weightedScoreItems: [{ resultContent: String; score: Number }];
           }
         ];
         radioButtonItems: [{
@@ -60,7 +61,7 @@ class ResultItems {
   _id: mongoose.Schema.Types.ObjectId;
 
   @prop({ required: true })
-  resultItems: { type: [{ typeContent: String; explanationContent: String }] };
+  resultItems: { type: [{ resultContent: String; explanationContent: String }] };
 }
 
 @plugin(AutoIncrementID, { field: "id", startAt: 1 })
@@ -97,7 +98,14 @@ class Personality {
 
   @prop({ ref: MbtiSelectItems })
   mbtiSelectItems?: Ref<MbtiSelectItems>;  
+
+  @prop({ ref: TrueOrFalseSelectItems })
+  trueOrFalseSelectItems?: Ref<TrueOrFalseSelectItems>;  
+
+  @prop({ ref: TrueOrFalseResultItems })
+  trueOrFalseResultItems?: Ref<TrueOrFalseResultItems>;  
 }
+
 
 export const PersonalityModel = getModelForClass(Personality);
 export const SelectItemsModel = getModelForClass(SelectItems);

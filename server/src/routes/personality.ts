@@ -11,6 +11,9 @@ import {
   setScoreTypeTest,
   updateMbtiTestType,
   deleteMbtiTypeTest,
+  setTrueOrFalseTypeTest,
+  deleteTrueOrFalseTypeTest,
+  updateTrueOrFalseTestType,
 } from "../controllers/personality.controller";
 import auth from "../middleware/auth";
 import checkPublic from "../middleware/checkPublic";
@@ -39,6 +42,11 @@ const personalityRoute: CustomRoute[] = [
       handler: [ auth, updateMbtiTestType ],
     },  
     {
+      method: METHOD.PUT,
+      route: "/api/v1/personality/true-or-false/:id",
+      handler: [ auth, updateTrueOrFalseTestType],
+    },  
+    {
       method: METHOD.DELETE,
       route: "/api/v1/personality/score/:id",
       handler: [ auth, deleteScoreTypeTest],
@@ -49,6 +57,12 @@ const personalityRoute: CustomRoute[] = [
       handler: [ auth, deleteMbtiTypeTest],
     },
     {
+      method: METHOD.DELETE,
+      route: "/api/v1/personality/true-or-false/:id",
+      handler: [ auth, deleteTrueOrFalseTypeTest],
+    },
+
+    {
       method: METHOD.POST,
       route: "/api/v1/personality/score",
       handler: [ auth, setScoreTypeTest ],
@@ -58,6 +72,13 @@ const personalityRoute: CustomRoute[] = [
       route: "/api/v1/personality/mbti",
       handler: [ auth, setMbtiTypeTest ],
     },
+
+    {
+      method: METHOD.POST,
+      route: "/api/v1/personality/true-or-false",
+      handler: [ auth, setTrueOrFalseTypeTest],
+    },
+
     {
       method: METHOD.GET,
       route: "/api/v1/personality",

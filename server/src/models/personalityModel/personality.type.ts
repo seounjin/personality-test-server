@@ -1,6 +1,6 @@
 
 export interface ResultItem {
-  typeContent: string;
+  resultContent: string;
   explanationContent: string;
 }
 
@@ -25,7 +25,7 @@ interface OptionItems {
 }
 
 interface WeightedScoreItem {
-  typeContent: string;
+  resultContent: string;
   score: number;
 }
 
@@ -44,7 +44,7 @@ export interface BasePersonalityTest {
 }
 
 export interface ScoreTypeTest extends BasePersonalityTest{
-  typeItems: ResultItem[];
+  resultItems: ResultItem[];
   selectItems: OptionValuesToSelect[];
 }
 
@@ -64,7 +64,7 @@ interface mbtiOptions extends Options {
 
 
 export interface MbtiTypeTest extends BasePersonalityTest{
-  mbtiTypeItems: ResultItem[];
+  mbtiResultItems: ResultItem[];
   mbtiSelectItems: mbtiOptions[];
 }
 
