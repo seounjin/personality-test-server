@@ -1,20 +1,17 @@
 import {
   PersonalityModel,
-  SelectItemsModel,
-  ResultItemsModel,
-  MbtiSelectItemsModel,
 } from "../models/personalityModel/personality.model";
 import { mongoose } from "@typegoose/typegoose";
 import {
   MbtiTypeTest,
-  OptionValuesToSelect,
   Personality,
-  ResultItem,
   ScoreTypeTest,
 } from "../models/personalityModel/personality.type";
-import { detailPersonalityItemsLookup, getPersonalityItemLookup, getPersonalityItemProject, personalityItemLookupByScoreType } from "../utils/aggregation";
+import { detailPersonalityItemsLookup, getPersonalityItemLookup, getPersonalityItemProject } from "../utils/aggregation";
 import { BadParameterException, NotFoundError } from "../errors/errorhandler";
 import { TrueOrFalseResultItemsModel, TrueOrFalseSelectItemsModel } from "../models/personalityModel/trueOrFalseTest.model";
+import { MbtiResultItemsModel, MbtiSelectItemsModel } from "../models/personalityModel/mbtiTest.model";
+import { ScoreSelectItemsModel, ScoreResultItemsModel } from "../models/personalityModel/scoreTest.model";
 
 
 export const getAllPersonalityItems = async (): Promise<Personality[]> => {
@@ -135,8 +132,8 @@ export const deleteScoreTypeTestById = async (id: number) => {
     if (!res) return Promise.reject('찾으려는 문서가 없음');
 
     await Promise.all([
-      await SelectItemsModel.findOneAndDelete({_id: res.selectItems}),
-      await ResultItemsModel.findOneAndDelete({_id: res.resultItems}),
+      await ScoreSelectItemsModel.findOneAndDelete({_id: res.scoreSelectItems}),
+      await ScoreResultItemsModel.findOneAndDelete({_id: res.scoreResultItems}),
     ]);
 
 
@@ -153,8 +150,8 @@ export const deleteMbtiTypeTestById = async (id: number) => {
     if (!res) return Promise.reject('찾으려는 문서가 없음');
 
     await Promise.all([
-      await MbtiSelectItemsModel.findOneAndDelete({_id: res.selectItems}),
-      await ResultItemsModel.findOneAndDelete({_id: res.resultItems}),
+      await MbtiSelectItemsModel.findOneAndDelete({_id: res.mbtiSelectItems}),
+      await MbtiResultItemsModel.findOneAndDelete({_id: res.mbtiResultItems}),
     ]);
 
 
@@ -207,8 +204,8 @@ export const updateScoreTypeItemsById = async (
 ) => {
   const {
     basicInformationItem: { title, subTitle, explain, thumbnailImgUrl },
-    resultItems,
-    selectItems,
+    scoreResultItems,
+    scoreSelectItems,
     isPublic,
   } = scoreTypeTestItems;
 
@@ -227,13 +224,13 @@ export const updateScoreTypeItemsById = async (
     ).exec();
     if (!personality) return Promise.reject('찾으려는 문서가 없음');
 
-    await SelectItemsModel.findOneAndUpdate(
-      { _id: personality.selectItems },
-      { $set: { selectItems: selectItems } },
+    await ScoreSelectItemsModel.findOneAndUpdate(
+      { _id: personality.scoreSelectItems },
+      { $set: { selectItems: scoreSelectItems } },
     ).exec();
-    await ResultItemsModel.findOneAndUpdate(
-      { _id: personality.resultItems },
-      { $set: { resultItems: resultItems } },
+    await ScoreResultItemsModel.findOneAndUpdate(
+      { _id: personality.scoreResultItems },
+      { $set: { resultItems: scoreResultItems } },
     ).exec();
   } catch (error) {
     return Promise.reject(error);
@@ -270,8 +267,8 @@ export const updateMbtiResultItemsById = async (
       { _id: personality.mbtiSelectItems },
       { $set: { selectItems: mbtiSelectItems } },
     ).exec();
-    await ResultItemsModel.findOneAndUpdate(
-      { _id: personality.resultItems },
+    await MbtiResultItemsModel.findOneAndUpdate(
+      { _id: personality.mbtiResultItems },
       { $set: { resultItems: mbtiResultItems } },
     ).exec();
   } catch (error) {
@@ -337,21 +334,21 @@ export const saveScoreTypeTest = async (scoreTypeTest: ScoreTypeTest) => {
   try {
     const {
       basicInformationItem: { title, subTitle, explain, thumbnailImgUrl },
-      resultItems,
-      selectItems,
+      scoreResultItems,
+      scoreSelectItems,
       userId,
       isPublic,
       testType,
     } = scoreTypeTest;
 
-    const selectOptionItems = new SelectItemsModel({
+    const selectOptionItems = new ScoreSelectItemsModel({
       _id: new mongoose.Types.ObjectId(),
-      selectItems: selectItems,
+      selectItems: scoreSelectItems,
     });
 
-    const resultItemsModel = new ResultItemsModel({
+    const resultItemsModel = new ScoreResultItemsModel({
       _id: new mongoose.Types.ObjectId(),
-      resultItems: resultItems,
+      resultItems: scoreResultItems,
     });
 
     const personality = new PersonalityModel({
@@ -359,8 +356,8 @@ export const saveScoreTypeTest = async (scoreTypeTest: ScoreTypeTest) => {
       subTitle: subTitle,
       explain: explain,
       isPublic: isPublic,
-      selectItems: selectOptionItems._id,
-      resultItems: resultItemsModel._id,
+      scoreSelectItems: selectOptionItems._id,
+      scoreResultItems: resultItemsModel._id,
       author: userId,
       testType: testType,
       thumbnailImgUrl:thumbnailImgUrl
@@ -393,7 +390,7 @@ export const saveMbtiTypeTest = async (mbtiTypeTest: MbtiTypeTest) => {
       selectItems: mbtiSelectItems,
     });
 
-    const resultItems = new ResultItemsModel({
+    const resultItems = new MbtiResultItemsModel({
       _id: new mongoose.Types.ObjectId(),
       resultItems: mbtiResultItems,
     });
@@ -404,7 +401,7 @@ export const saveMbtiTypeTest = async (mbtiTypeTest: MbtiTypeTest) => {
       explain: explain,
       isPublic: isPublic,
       mbtiSelectItems: mbtiSelectOptionItems._id,
-      resultItems: resultItems._id,
+      mbtiResultItems: resultItems._id,
       author: userId,
       testType: testType,
       thumbnailImgUrl: thumbnailImgUrl,

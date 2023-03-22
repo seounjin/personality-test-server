@@ -254,7 +254,6 @@ export const setMbtiTypeTest = async (
   }
 };
 
-// 저장
 export const setTrueOrFalseTypeTest = async (
   req: express.Request,
   res: express.Response
@@ -278,4 +277,3 @@ export const setTrueOrFalseTypeTest = async (
   }
 };
 
-// 수정

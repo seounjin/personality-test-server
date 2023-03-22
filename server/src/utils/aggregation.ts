@@ -5,16 +5,16 @@ type TestTypeDIc = Record<string, Record<string, string>>;
 
 const TEST_TYPE_DIC: TestTypeDIc = {
   score: {
-    resultItemsFrom: 'resultitems',
-    selectItemsFrom: 'selectitems',
-    selectItemsLocalField: 'selectItems',
-    resultItemsLocalField: 'resultItems',
+    resultItemsFrom: 'scoreresultitems',
+    selectItemsFrom: 'scoreselectitems',
+    selectItemsLocalField: 'scoreSelectItems',
+    resultItemsLocalField: 'scoreResultItems',
   },
   mbti: {
-    resultItemsFrom: 'resultitems',
+    resultItemsFrom: 'mbtiresultitems',
     selectItemsFrom: 'mbtiselectitems',
     selectItemsLocalField: 'mbtiSelectItems',
-    resultItemsLocalField: 'resultItems',
+    resultItemsLocalField: 'mbtiResultItems',
   },
   'true-or-false': {
     resultItemsFrom: 'trueorfalseresultitems',

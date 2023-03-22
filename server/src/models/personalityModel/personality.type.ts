@@ -44,8 +44,8 @@ export interface BasePersonalityTest {
 }
 
 export interface ScoreTypeTest extends BasePersonalityTest{
-  resultItems: ResultItem[];
-  selectItems: OptionValuesToSelect[];
+  scoreResultItems: ResultItem[];
+  scoreSelectItems: OptionValuesToSelect[];
 }
 
 
