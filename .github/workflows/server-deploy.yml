@@ -21,9 +21,9 @@ jobs:
           echo API_PORT=${{ secrets.API_PORT }} >> .env
           echo SERVER_DOMAIN=${{ secrets.SERVER_DOMAIN }} >> .env
           echo SSL_EMAIL=${{ secrets.SSL_EMAIL }} >> .env
-          echo NGINX_HOST_REQUEST_URI=${{ secrets.NGINX_HOST_REQUEST_URI }} >> .env
-          echo HOST=${{ secrets.HOST }} >> .env
-          echo PROXY_ADD_X_FORWARDED_FOR=${{ secrets.PROXY_ADD_X_FORWARDED_FOR }} >> .env
+          echo NGINX_HOST_REQUEST_URI=$host$request_uri >> .env
+          echo HOST=$host >> .env
+          echo PROXY_ADD_X_FORWARDED_FOR=$proxy_add_x_forwarded_for >> .env
       
       - name: Create Server Env File
         working-directory: ./server
