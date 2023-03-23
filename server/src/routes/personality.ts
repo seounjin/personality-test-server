@@ -91,7 +91,7 @@ const personalityRoute: CustomRoute[] = [
     },
     {
       method: METHOD.GET,
-      route: "/api/v1/personality/:id/results/:type",
+      route: "/api/v1/personality/:id/:testType/results/:result",
       handler: getPersonalityTestResult,
     },
 ];

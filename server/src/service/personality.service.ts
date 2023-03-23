@@ -7,7 +7,7 @@ import {
   Personality,
   ScoreTypeTest,
 } from "../models/personalityModel/personality.type";
-import { detailPersonalityItemsLookup, getPersonalityItemLookup, getPersonalityItemProject } from "../utils/aggregation";
+import { detailPersonalityItemsLookup, getPersonalityItemLookup, getPersonalityItemProject, getPersonalityTestResultFilterCond, getPersonalityTestResultLookup } from "../utils/aggregation";
 import { BadParameterException, NotFoundError } from "../errors/errorhandler";
 import { TrueOrFalseResultItemsModel, TrueOrFalseSelectItemsModel } from "../models/personalityModel/trueOrFalseTest.model";
 import { MbtiResultItemsModel, MbtiSelectItemsModel } from "../models/personalityModel/mbtiTest.model";
@@ -56,29 +56,15 @@ export const getPersonalityById = async (id: number) => {
 
 export const getPersonalityTestResultByType = async (
   id: number,
-  type: string
+  testType: string,
+  result: string
 ) => {
   try {
     const res = await PersonalityModel.aggregate([
       {
         $match: { id: id },
       },
-      {
-        $lookup: {
-          from: "resultitems",
-          let: { resultItemsId: "$resultItems" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ["$_id", "$$resultItemsId"],
-                },
-              },
-            },
-          ],
-          as: "items",
-        },
-      },
+      ...getPersonalityTestResultLookup(testType),
       {
         $unwind: "$items",
       },
@@ -88,7 +74,7 @@ export const getPersonalityTestResultByType = async (
             $filter: {
               input: "$items.resultItems",
               cond: {
-                $eq: ["$$this.resultContent", type],
+                $eq: getPersonalityTestResultFilterCond(testType, result),
               },
             },
           },

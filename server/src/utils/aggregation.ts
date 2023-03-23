@@ -1,9 +1,9 @@
 
 
-type TestTypeDIc = Record<string, Record<string, string>>;
+type TestTypeDic = Record<string, Record<string, string>>;
 
 
-const TEST_TYPE_DIC: TestTypeDIc = {
+const TEST_TYPE_DIC: TestTypeDic = {
   score: {
     resultItemsFrom: 'scoreresultitems',
     selectItemsFrom: 'scoreselectitems',
@@ -118,8 +118,8 @@ export const getPersonalityItemLookup = (testType: string) => {
       return [
         {
           $lookup: {
-            from: 'selectitems',
-            localField: 'selectItems',
+            from: TEST_TYPE_DIC[testType].selectItemsFrom,
+            localField: TEST_TYPE_DIC[testType].selectItemsLocalField,
             foreignField: '_id',
             as: 'selectItems',
           },
@@ -134,8 +134,8 @@ export const getPersonalityItemLookup = (testType: string) => {
       return [
         {
           $lookup: {
-            from: 'mbtiselectitems',
-            localField: 'mbtiSelectItems',
+            from: TEST_TYPE_DIC[testType].selectItemsFrom,
+            localField: TEST_TYPE_DIC[testType].selectItemsLocalField,
             foreignField: '_id',
             pipeline: [
               {
@@ -150,6 +150,22 @@ export const getPersonalityItemLookup = (testType: string) => {
         },
       ];
     }
+    case 'true-or-false': {
+      return [
+        {
+          $lookup: {
+            from: TEST_TYPE_DIC[testType].selectItemsFrom,
+            localField: TEST_TYPE_DIC[testType].selectItemsLocalField,
+            foreignField: '_id',
+            as: 'selectItems',
+          },
+        },
+        {
+          $unwind: '$selectItems',
+        },
+      ];
+    }
+
     default: {
       return []
     }
@@ -169,3 +185,42 @@ export const getPersonalityItemProject = () => [
     },
   },
 ];
+
+
+export const getPersonalityTestResultLookup = (testType: string) => [
+  {
+    $lookup: {
+      from: TEST_TYPE_DIC[testType].resultItemsFrom,
+      let: { resultItemsId: `$${TEST_TYPE_DIC[testType].resultItemsLocalField}` },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ["$_id", "$$resultItemsId"],
+            },
+          },
+        },
+      ],
+      as: "items",
+    },
+  },
+]
+
+export const getPersonalityTestResultFilterCond = (
+  testType: string,
+  result: string,
+) => {
+  switch (testType) {
+    case 'score': {
+      return ['$$this.resultContent', result];
+    }
+    case 'mbti': {
+      return ['$$this.resultContent', result];
+    }
+    case 'true-or-false': {
+      return ['$$this.selectedOptionNumber', result];
+    }
+    default:
+      return [];
+  }
+};

@@ -60,9 +60,10 @@ export const getPersonalityTestResult = async (
   res: express.Response
 ): Promise<Response> => {
   const id = parseInt(req.params.id);
-  const type = req.params.type;
+  const testType = req.params.testType;
+  const result = req.params.result;
   try {
-    const data = await getPersonalityTestResultByType(id, type);
+    const data = await getPersonalityTestResultByType(id, testType, result);
     return res.status(200).json({ success: true, data });
   } catch (error) {
     if (error instanceof BadParameterException) {
