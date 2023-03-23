@@ -40,6 +40,8 @@ http {
             proxy_set_header Connection "";  
             proxy_set_header X-Forwarded-For ${PROXY_ADD_X_FORWARDED_FOR};
             proxy_set_header Host ${HOST};
+            proxy_set_header Cookie ${HTTP_COOKIE};
+            proxy_cookie_path / "/; HttpOnly; Secure; SameSite=None";
         }
 
     }

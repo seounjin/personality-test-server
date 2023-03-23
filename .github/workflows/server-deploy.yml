@@ -24,7 +24,8 @@ jobs:
           echo "NGINX_HOST_REQUEST_URI=\$host$request_uri" >> .env
           echo "HOST=\$host" >> .env
           echo "PROXY_ADD_X_FORWARDED_FOR=\$proxy_add_x_forwarded_for" >> .env
-      
+          echo "HTTP_COOKIE=\$http_cookie" >> .env
+
       - name: Create Server Env File
         working-directory: ./server
         run: |
