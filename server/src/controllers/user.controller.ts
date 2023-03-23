@@ -9,6 +9,7 @@ dotenv.config();
 
 process.env.NODE_ENV = ( process.env.NODE_ENV && ( process.env.NODE_ENV ).trim().toLowerCase() == 'production' ) ? 'production' : 'development';
 const secure = process.env.NODE_ENV === 'production' ? true : false;
+const sameSite = process.env.NODE_ENV === "production" ? "none" : false;
 
 export const userSignup = async (
   { body }: express.Request,
@@ -44,6 +45,7 @@ export const userLogin = async (
       res.cookie('accessToken', accessToken , {
         httpOnly: true,
         secure: secure,
+        sameSite: sameSite,
         maxAge: 24 * 60 * 60 * 1000, 
       });
 
@@ -51,6 +53,7 @@ export const userLogin = async (
       res.cookie('refreshToken', refreshToken , {
         httpOnly: true,
         secure: secure,
+        sameSite: sameSite,
         maxAge: 1000 * 60 * 60 * 24 * 14, 
       });
 
