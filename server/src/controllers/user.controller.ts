@@ -46,7 +46,7 @@ export const userLogin = async (
         httpOnly: true,
         secure: secure,
         sameSite: sameSite,
-        domain: '.app.localhost',
+        // domain: '.app.localhost',
         maxAge: 24 * 60 * 60 * 1000, 
       });
 
@@ -55,7 +55,7 @@ export const userLogin = async (
         httpOnly: true,
         secure: secure,
         sameSite: sameSite,
-        domain: '.app.localhost',
+        // domain: '.app.localhost',
         maxAge: 1000 * 60 * 60 * 24 * 14, 
       });
 
