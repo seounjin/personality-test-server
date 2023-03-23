@@ -21,7 +21,7 @@ jobs:
           echo API_PORT=${{ secrets.API_PORT }} >> .env
           echo SERVER_DOMAIN=${{ secrets.SERVER_DOMAIN }} >> .env
           echo SSL_EMAIL=${{ secrets.SSL_EMAIL }} >> .env
-          echo "NGINX_HOST_REQUEST_URI=\$host$request_uri" >> .env
+          echo "NGINX_HOST_REQUEST_URI=\$host\$request_uri" >> .env
           echo "HOST=\$host" >> .env
           echo "PROXY_ADD_X_FORWARDED_FOR=\$proxy_add_x_forwarded_for" >> .env
           echo "HTTP_COOKIE=\$http_cookie" >> .env
