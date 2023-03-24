@@ -26,7 +26,7 @@ jobs:
           echo "PROXY_ADD_X_FORWARDED_FOR=\$proxy_add_x_forwarded_for" >> .env
           echo "HTTP_COOKIE=\$http_cookie" >> .env
           echo "HTTP_ORIGIN=\$http_origin" >> .env
-
+          echo "REQUEST_METHOD=\$request_method" >> .env 
 
       - name: Create Server Env File
         working-directory: ./server
