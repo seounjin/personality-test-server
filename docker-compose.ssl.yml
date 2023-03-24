@@ -22,6 +22,8 @@ services:
     # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   certbot:
+    depends_on:
+      - nginx
     container_name: certbot-ssl
     image: certbot/certbot:latest
     restart: unless-stopped
