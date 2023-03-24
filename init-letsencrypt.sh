@@ -1,4 +1,4 @@
-domains=(api.rororo-marshmallow.store www.api.rororo-marshmallow.store)
+domains=(api.rororo-marshmallow.store)
 rsa_key_size=4096
 data_path="./nginx/certbot"
 email="qustjdwls123@naver.com" 
