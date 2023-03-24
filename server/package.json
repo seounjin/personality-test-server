@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "nodemon src/index.ts",
-    "test": "NODE_ENV=development nodemon ./node_modules/.bin/ts-node index.ts",
+    "test": "NODE_ENV=development node ./dist/index.js",
     "start": "NODE_ENV=production node ./dist/index.js"
   }
 }
