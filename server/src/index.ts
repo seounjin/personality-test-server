@@ -10,7 +10,7 @@ dotenv.config();
 process.env.NODE_ENV = ( process.env.NODE_ENV && ( process.env.NODE_ENV ).trim().toLowerCase() == 'production' ) ? 'production' : 'development';
 
 const PORT = process.env.NODE_ENV === 'development' ? process.env.DEV_PORT : process.env.PROD_PORT
-const CORS_ORIGIN = process.env.CORS_ORIGIN;
+const CORS_ORIGIN = process.env.NODE_ENV === 'development' ? process.env.LOCAL_CORS_ORIGIN : process.env.PROD_CORS_ORIGIN
 
 const cors = require("cors");
 const app = express();
@@ -25,7 +25,7 @@ app.use(express.json({limit:"3mb"}));
 
 
 app.use(
-  cors({origin: 'http://localhost:3000',
+  cors({origin: CORS_ORIGIN,
   credentials: true
 })
 );

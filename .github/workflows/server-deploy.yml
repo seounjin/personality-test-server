@@ -34,7 +34,8 @@ jobs:
           touch .env
           echo DEV_PORT=${{ secrets.DEV_PORT }} >> .env
           echo PROD_PORT=${{ secrets.PROD_PORT }} >> .env
-          echo CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> .env
+          echo LOCAL_CORS_ORIGIN=${{ secrets.LOCAL_CORS_ORIGIN }} >> .env
+          echo PROD_CORS_ORIGIN=${{ secrets.PROD_CORS_ORIGIN }} >> .env
           echo MONGODB_URI=${{ secrets.MONGODB_URI }} >> .env
           echo JWT_ACCESS_TOKEN_SECRET_KEY=${{ secrets.JWT_ACCESS_TOKEN_SECRET_KEY }} >> .env
           echo JWT_REFRESH_TOKEN_SECRET_KEY=${{ secrets.JWT_REFRESH_TOKEN_SECRET_KEY }} >> .env
