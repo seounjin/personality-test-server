@@ -10,6 +10,7 @@ dotenv.config();
 process.env.NODE_ENV = ( process.env.NODE_ENV && ( process.env.NODE_ENV ).trim().toLowerCase() == 'production' ) ? 'production' : 'development';
 const secure = process.env.NODE_ENV === 'production' ? true : false;
 const sameSite = process.env.NODE_ENV === "production" ? "none" : false;
+const domain = process.env.CLIENT_DOMAIN
 
 export const userSignup = async (
   { body }: express.Request,
@@ -46,7 +47,7 @@ export const userLogin = async (
         httpOnly: true,
         secure: secure,
         sameSite: sameSite,
-        // domain: '.app.localhost',
+        domain: process.env.NODE_ENV === 'production' ? domain : undefined,
         maxAge: 24 * 60 * 60 * 1000, 
       });
 
@@ -55,7 +56,7 @@ export const userLogin = async (
         httpOnly: true,
         secure: secure,
         sameSite: sameSite,
-        // domain: '.app.localhost',
+        domain: process.env.NODE_ENV === 'production' ? domain : undefined,
         maxAge: 1000 * 60 * 60 * 24 * 14, 
       });
 
