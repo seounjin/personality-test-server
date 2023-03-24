@@ -12,9 +12,6 @@ services:
   nginx:
     image: nginx:latest
     restart: "unless-stopped" 
-    # build:
-    #   context: ./nginx
-    #   dockerfile: "Dockerfile"
     ports:
       - 80:80
       - 443:443

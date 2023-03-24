@@ -2,14 +2,36 @@ version: "3"
 
 services:
   express:
+    environment:
+        - MONGODB_URI
     build:
+      context: ./server
+      dockerfile: "Dockerfile.dev"
       args:
         - EXPOSE_PORT=8080
     volumes:
       - /usr/src/app/node_modules
       - ./server:/usr/src/app
-  nginx:
-    volumes:
-      - ./nginx/templates/dev.conf.template:/etc/nginx/conf.d/default.conf.template
+    ports:
+      - 8080:8080
+  # nginx:
+  #   volumes:
+  #     - ./nginx/templates/dev.conf.template:/etc/nginx/conf.d/default.conf.template
     env_file:
       - .env
+
+
+
+# services:
+#   express:
+#     build:
+#       args:
+#         - EXPOSE_PORT=8080
+#     volumes:
+#       - /usr/src/app/node_modules
+#       - ./server:/usr/src/app
+#   nginx:
+#     volumes:
+#       - ./nginx/templates/dev.conf.template:/etc/nginx/conf.d/default.conf.template
+#     env_file:
+#       - .env
