@@ -2,19 +2,16 @@ version: "3"
 
 services:
   express:
-      environment:
-        - MONGODB_URI
       build:
         context: ./server
         dockerfile: "Dockerfile"
       container_name: express
+      env_file:
+      - ./server/.env
 
   nginx:
     image: nginx:latest
     restart: "unless-stopped" 
-    # build:
-    #   context: ./nginx
-    #   dockerfile: "Dockerfile"
     ports:
       - 80:80
       - 443:443

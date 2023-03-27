@@ -4,15 +4,13 @@ services:
   express:
     build:
       args:
-        - EXPOSE_PORT=$PROD_SERVICE_PORT
+        - EXPOSE_PORT=$PROD_PORT
 
   nginx:
     volumes:
       - ./nginx/templates/default.conf.template:/etc/nginx/conf.d/default.conf.template
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/www:/var/www/certbot
-    env_file:
-      - .env
 
   certbot:
     depends_on:

@@ -12,6 +12,7 @@ RUN npm ci
 
 COPY ./ ./
 
+RUN npm run build
 
 EXPOSE ${EXPOSE_PORT}
 

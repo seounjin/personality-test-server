@@ -12,13 +12,6 @@ services:
     ports:
       - 80:80
       - 443:443
-    environment:
-      - SERVER_DOMAIN=$SERVER_DOMAIN
-      - NGINX_HOST_REQUEST_URI=$NGINX_HOST_REQUEST_URI
-      - HOST=$HOST
-      - PROXY_ADD_X_FORWARDED_FOR=$PROXY_ADD_X_FORWARDED_FOR
-      - HTTP_COOKIE=$HTTP_COOKIE
-      - REQUEST_METHOD=$REQUEST_METHOD
     # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   certbot:
