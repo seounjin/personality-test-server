@@ -14,7 +14,6 @@ const CORS_ORIGIN = process.env.NODE_ENV === 'development' ? process.env.LOCAL_C
 
 const cors = require("cors");
 const app = express();
-const bodyParser = require("body-parser");
 
 const cookieParser = require("cookie-parser");
 
