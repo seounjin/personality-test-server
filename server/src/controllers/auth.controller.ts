@@ -4,6 +4,7 @@ import { createAccessToken, findRefreshToken, verifyAccessToken, verifyRefreshTo
 import dotenv from "dotenv";
 import { JwtExpiredError, JwtInvaildError, JwtNotFound } from "../errors/jwtErrors";
 import { splitEmail } from "../utils/splitEmail";
+import { clearCookies } from "../utils/auth";
 dotenv.config();
 
 process.env.NODE_ENV = ( process.env.NODE_ENV && ( process.env.NODE_ENV ).trim().toLowerCase() == 'production' ) ? 'production' : 'development';
@@ -72,9 +73,8 @@ export const userAuth = async(
       if (error instanceof JwtExpiredError) {
         return res.status(error.statusCode).send();
       } else if (error instanceof JwtInvaildError) {
-        return res.clearCookie("accessToken")
-                  .clearCookie("refreshTooken")
-                  .status(error.statusCode).send();
+        clearCookies("accessToken", "refreshToken")(req, res);
+        return res.status(error.statusCode).send(); 
       }
 
       return res.status(500).send();

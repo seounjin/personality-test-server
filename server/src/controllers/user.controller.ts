@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { splitEmail } from "../utils/splitEmail";
 import { updateAuthortoAdmin } from "../service/personality.service";
 import { BadParameterException, ConflictError } from "../errors/errorhandler";
+import { clearCookies } from "../utils/auth";
 dotenv.config();
 
 process.env.NODE_ENV = ( process.env.NODE_ENV && ( process.env.NODE_ENV ).trim().toLowerCase() == 'production' ) ? 'production' : 'development';
@@ -86,14 +87,12 @@ export const userLogout = async (
     if (!refreshToken) throw new Error('refreshToken 없음');
     await deleteRefreshToken(refreshToken);
 
-    return res.clearCookie("accessToken")
-              .clearCookie("refreshToken")
-              .status(200).json({ success: true });
+    clearCookies("accessToken", "refreshToken")(req, res);
+    return res.status(200).json({ success: true });
 
   } catch (error) {
-    return res.clearCookie("accessToken")
-              .clearCookie("refreshToken")
-              .status(200).json({ success: false });
+    clearCookies("accessToken", "refreshToken")(req, res);
+    return res.status(200).json({ success: false });
   }
 }
 
@@ -111,9 +110,8 @@ export const userSignout = async (
     const author = splitEmail(email);
     await updateAuthortoAdmin(author);
 
-    return res.clearCookie("accessToken")
-              .clearCookie("refreshToken")
-              .status(200).json({ success: true });
+    clearCookies("accessToken", "refreshToken")(req, res);
+    return res.status(200).json({ success: true });
 
   } catch (error) {
    return res.status(500).json({ success: false });

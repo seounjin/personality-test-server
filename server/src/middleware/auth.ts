@@ -1,6 +1,7 @@
 import express, { NextFunction } from "express";
 import { JwtExpiredError, JwtInvaildError, JwtNotFound } from "../errors/jwtErrors";
 import { verifyAccessToken } from "../service/auth.service";
+import { clearCookies } from "../utils/auth";
 
 
 const auth = async(req: express.Request, res: express.Response, next: NextFunction) => {
@@ -26,8 +27,8 @@ const auth = async(req: express.Request, res: express.Response, next: NextFuncti
         } else if (error instanceof JwtNotFound) {
             return res.status(error.statusCode).json({ success: false }); 
         }
-        res.clearCookie("accessToken");
-        res.clearCookie("refreshToken");
+        
+        clearCookies("accessToken", "refreshToken")(req, res);
         return res.status(500).send();
     }
 };
