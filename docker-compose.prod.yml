@@ -5,6 +5,8 @@ services:
     build:
       args:
         - EXPOSE_PORT=$PROD_PORT
+    env_file:
+      - ./server/.env
 
   nginx:
     volumes:
