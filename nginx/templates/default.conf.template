@@ -45,5 +45,9 @@ http {
 
         }
 
+        location /static {
+    		alias /usr/src/app/dist/public/images;
+	    }
+
     }
 }
