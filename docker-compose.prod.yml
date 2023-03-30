@@ -5,15 +5,13 @@ services:
     build:
       args:
         - EXPOSE_PORT=$PROD_PORT
-    env_file:
-      - ./server/.env
     volumes:
-      - ./server:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./server/src/public/images:/usr/src/app/dist/public/images
+
 
   nginx:
     volumes:
-      - /usr/src/app/dist/public/images
+      - ./server/src/public/images:/usr/src/app/dist/public/images
       - ./nginx/templates/default.conf.template:/etc/nginx/conf.d/default.conf.template
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/www:/var/www/certbot

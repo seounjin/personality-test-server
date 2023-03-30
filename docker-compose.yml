@@ -2,6 +2,7 @@ version: "3"
 
 services:
   express:
+      restart: always
       build:
         context: ./server
         dockerfile: "Dockerfile"

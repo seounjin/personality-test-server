@@ -228,7 +228,6 @@ export const setScoreTypeTest = async (
     await saveScoreTypeTest(scoreTypeTest);
     return res.status(201).json({ success: true });    
   } catch (error) {
-    console.log("서버에러", error)
     return res.status(500).json({ success: false }); 
   }
 };
