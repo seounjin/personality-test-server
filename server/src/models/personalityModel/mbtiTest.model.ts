@@ -6,7 +6,7 @@ export class MbtiResultItems {
   _id: mongoose.Schema.Types.ObjectId;
 
   @prop({ required: true })
-  resultItems: { type: [{ resultContent: String; explanationContent: String }] };
+  resultItems: { type: [{ mbtiType: string, resultContent: String; explanationContent: String }] };
 }
 
 

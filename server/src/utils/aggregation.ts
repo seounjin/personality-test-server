@@ -215,7 +215,7 @@ export const getPersonalityTestResultFilterCond = (
       return ['$$this.resultContent', result];
     }
     case 'mbti': {
-      return ['$$this.resultContent', result];
+      return ['$$this.mbtiType', result];
     }
     case 'true-or-false': {
       return ['$$this.selectedOptionNumber', result];
