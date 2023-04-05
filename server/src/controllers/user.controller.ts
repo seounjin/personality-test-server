@@ -91,8 +91,7 @@ export const userLogout = async (
     return res.status(200).json({ success: true });
 
   } catch (error) {
-    clearCookies("accessToken", "refreshToken")(req, res);
-    return res.status(200).json({ success: false });
+    return res.status(500).json({ success: false });
   }
 }
 

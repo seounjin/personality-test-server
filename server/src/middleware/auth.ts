@@ -28,7 +28,6 @@ const auth = async(req: express.Request, res: express.Response, next: NextFuncti
             return res.status(error.statusCode).json({ success: false }); 
         }
         
-        clearCookies("accessToken", "refreshToken")(req, res);
         return res.status(500).send();
     }
 };
