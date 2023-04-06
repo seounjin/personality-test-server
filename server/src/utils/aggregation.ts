@@ -180,6 +180,7 @@ export const getPersonalityItemProject = () => [
       author: 1,
       testType: 1,
       isPublic: 1,
+      thumbnailImgUrl: 1,
       selectItems: '$selectItems.selectItems',
       _id: 0,
     },
