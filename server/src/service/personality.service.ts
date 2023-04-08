@@ -12,6 +12,8 @@ import { BadParameterException, NotFoundError } from "../errors/errorhandler";
 import { TrueOrFalseResultItemsModel, TrueOrFalseSelectItemsModel } from "../models/personalityModel/trueOrFalseTest.model";
 import { MbtiResultItemsModel, MbtiSelectItemsModel } from "../models/personalityModel/mbtiTest.model";
 import { ScoreSelectItemsModel, ScoreResultItemsModel } from "../models/personalityModel/scoreTest.model";
+import { AccessTokenModel } from "../models/personalityModel/accessToken.model";
+import jwt from "jsonwebtoken";
 
 
 export const getAllPersonalityItems = async (): Promise<Personality[]> => {
@@ -101,7 +103,7 @@ export const getMyPersonalityItemsByAuthor = async (author:string): Promise<Pers
   try {
     const res = await PersonalityModel.find(
       { author: author },
-      { _id: 0, selectItems: 0, resultItems: 0, mbtiSelectItems: 0, isPublic: 0 }
+      { _id: 0, selectItems: 0, resultItems: 0, mbtiSelectItems: 0 }
     );
 
     return res;
@@ -448,3 +450,39 @@ export const saveTrueOrFalseTypeTest = async (trueOrFalseTypeTest: any) => {
     return Promise.reject(error);
   }
 };
+
+export const findAccessTokenById = async( id: number ) => {
+
+  try {
+    const accesstokenData = await AccessTokenModel.findOne({ id: id });   
+    return accesstokenData ? accesstokenData.accessToken : null;
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+export const createAccessToken = (id: number) => {
+
+  const token = jwt.sign(
+      { id },
+      process.env.JWT_ACCESS_TOKEN_SECRET_KEY ?? '',
+      { expiresIn: "1h" }
+  );
+
+  return token;
+}
+
+export const saveAccessToken = async(id: number, accessToken: string) => {
+
+  try {
+    const accessTokenItem = new AccessTokenModel({
+      id: id,
+      accessToken: accessToken
+    });  
+    await accessTokenItem.save();
+  } catch (error) {
+    return Promise.reject(error);
+  }
+  
+}

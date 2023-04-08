@@ -15,6 +15,9 @@ import {
   saveTrueOrFalseTypeTest,
   deleteTrueOrFalseTypeTestById,
   updateTrueOrFalseTestItemsById,
+  findAccessTokenById,
+  createAccessToken,
+  saveAccessToken
 } from "../service/personality.service";
 import { uploadImageFile } from "../utils/imageUpload";
 import { parseTestItems } from "../utils/parseTestItems";
@@ -277,3 +280,27 @@ export const setTrueOrFalseTypeTest = async (
   }
 };
 
+
+export const getAccessToken = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => {
+
+  const id = parseInt(req.params.id);
+
+  try {
+    const accessToken = await findAccessTokenById(id)
+
+    if (accessToken) {
+      return res.status(201).json({ success: true, accessToken: accessToken});    
+    }
+
+    const newAccessToken = await createAccessToken(id);
+
+    await saveAccessToken(id, newAccessToken);
+
+    return res.status(201).json({ success: true, accessToken: newAccessToken });    
+  } catch (error) {
+    return res.status(500).json({ success: false }); 
+  }
+};

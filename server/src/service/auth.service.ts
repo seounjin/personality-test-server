@@ -38,7 +38,7 @@ export const verifyAccessToken = (accessToken: string): JwtPayload  => {
         } else if(error instanceof JsonWebTokenError) {
             throw new JwtInvaildError(error.message);
         }
-       
+                
         throw new Error(`${error}`);
     }
 }

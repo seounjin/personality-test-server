@@ -14,13 +14,22 @@ import {
   setTrueOrFalseTypeTest,
   deleteTrueOrFalseTypeTest,
   updateTrueOrFalseTestType,
+  getAccessToken,
 } from "../controllers/personality.controller";
 import auth from "../middleware/auth";
 import checkPublic from "../middleware/checkPublic";
 import checkDetailPersonality from "../middleware/checkDetailPersonality";
+import checkAccessToken from "../middleware/checkAccessToken";
 
 
 const personalityRoute: CustomRoute[] = [
+
+    {
+      method: METHOD.GET,
+      route: "/api/v1/personality/private/:id",
+      handler: [ checkAccessToken, getPersonalityItem],
+    },
+
     {
       method: METHOD.GET,
       route: "/api/v1/personality/my-personality",
@@ -62,6 +71,8 @@ const personalityRoute: CustomRoute[] = [
       handler: [ auth, deleteTrueOrFalseTypeTest],
     },
 
+   
+
     {
       method: METHOD.POST,
       route: "/api/v1/personality/score",
@@ -89,10 +100,16 @@ const personalityRoute: CustomRoute[] = [
       route: "/api/v1/personality/:id",
       handler: [checkPublic, getPersonalityItem],
     },
+    
     {
       method: METHOD.GET,
       route: "/api/v1/personality/:id/:testType/results/:result",
       handler: getPersonalityTestResult,
+    },
+    {
+      method: METHOD.GET,
+      route: "/api/v1/propensity/:id/access-token",
+      handler: getAccessToken,
     },
 ];
 

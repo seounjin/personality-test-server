@@ -1,7 +1,6 @@
 import express, { NextFunction } from "express";
 import { JwtExpiredError, JwtInvaildError, JwtNotFound } from "../errors/jwtErrors";
 import { verifyAccessToken } from "../service/auth.service";
-import { clearCookies } from "../utils/auth";
 
 
 const auth = async(req: express.Request, res: express.Response, next: NextFunction) => {
