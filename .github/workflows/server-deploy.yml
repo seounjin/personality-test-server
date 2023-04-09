@@ -40,6 +40,7 @@ jobs:
           echo JWT_ACCESS_TOKEN_SECRET_KEY=${{ secrets.JWT_ACCESS_TOKEN_SECRET_KEY }} >> .env
           echo JWT_REFRESH_TOKEN_SECRET_KEY=${{ secrets.JWT_REFRESH_TOKEN_SECRET_KEY }} >> .env
           echo CLIENT_DOMAIN=${{ secrets.CLIENT_DOMAIN }} >> .env
+          echo IMAGE_URL=${{ secrets.IMAGE_URL }} >> .env
 
       - name: Make zip file
         run: zip -qq -r ./$GITHUB_SHA.zip .

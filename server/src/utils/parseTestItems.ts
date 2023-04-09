@@ -7,7 +7,7 @@ export const parseTestItems = (data: any, userId: string, filename: string) => {
       basicInformationItem: {
         ...data.basicInformationItem,
         thumbnailImgUrl: data.isChangeImage
-          ? `${process.env.PROD_CORS_ORIGIN}/static/${filename}`
+          ? `${process.env.IMAGE_URL}/static/${filename}`
           : filename,
       },
     };
