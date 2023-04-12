@@ -1,6 +1,6 @@
 import express, { Response } from "express";
 import { createAccessToken, createRefreshToken } from "../service/auth.service";
-import { deleteRefreshToken, deleteUserInformation, saveRefreshToken, setUserInformation, validateUser } from "../service/user.service";
+import { deleteRefreshToken, deleteUserInformation, getMyPersonalityItemsByAuthor, saveRefreshToken, setUserInformation, validateUser } from "../service/user.service";
 import dotenv from "dotenv";
 import { splitEmail } from "../utils/splitEmail";
 import { updateAuthortoAdmin } from "../service/personality.service";
@@ -116,5 +116,30 @@ export const userSignout = async (
    return res.status(500).json({ success: false });
 
   }
-
 }
+
+export const getUserId = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => { 
+
+  try {
+    return res.status(200).json({ success: true, userId: req.user });
+  } catch (error) {
+   return res.status(500).json({ success: false });
+
+  }
+}
+
+export const getMyPersonalityTest = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => {
+  const userId = splitEmail(req.user);
+  try {
+    const data = await getMyPersonalityItemsByAuthor(userId);
+    return res.status(200).json({ success: true , data });
+  } catch (error) {
+    return res.status(500).json({ success: false });
+  }
+};

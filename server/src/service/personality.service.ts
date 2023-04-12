@@ -96,22 +96,6 @@ export const getPersonalityTestResultByType = async (
   }
 };
 
-
-
-export const getMyPersonalityItemsByAuthor = async (author:string): Promise<Personality[]> => {
-
-  try {
-    const res = await PersonalityModel.find(
-      { author: author },
-      { _id: 0, selectItems: 0, resultItems: 0, mbtiSelectItems: 0 }
-    );
-
-    return res;
-  } catch (error) {
-    return Promise.reject(error);
-  }
-};
-
 export const deleteScoreTypeTestById = async (id: number) => {
   
   try {

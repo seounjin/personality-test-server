@@ -3,7 +3,6 @@ import {
   getPersonality,
   getPersonalityItem,
   getPersonalityTestResult,
-  getMyPersonalityTest,
   deleteScoreTypeTest,
   getDetailPersonalityItems,
   updateScoreTestType ,
@@ -30,11 +29,6 @@ const personalityRoute: CustomRoute[] = [
       handler: [ checkAccessToken, getPersonalityItem],
     },
 
-    {
-      method: METHOD.GET,
-      route: "/api/v1/personality/my-personality",
-      handler: [auth, getMyPersonalityTest]
-    },
     {
       method: METHOD.GET,
       route: "/api/v1/personality/:type/:id",
@@ -70,8 +64,6 @@ const personalityRoute: CustomRoute[] = [
       route: "/api/v1/personality/true-or-false/:id",
       handler: [ auth, deleteTrueOrFalseTypeTest],
     },
-
-   
 
     {
       method: METHOD.POST,

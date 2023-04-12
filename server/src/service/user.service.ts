@@ -3,6 +3,8 @@ import {
     mongoose
   } from "@typegoose/typegoose";
 import { ConflictError } from "../errors/errorhandler";
+import { PersonalityModel } from "../models/personalityModel/personality.model";
+import { Personality } from "../models/personalityModel/personality.type";
 
 interface UserInformation {
     email: string;
@@ -95,3 +97,18 @@ export const findUserInformationByEmail = async (email: string): Promise<UserIte
         return Promise.reject(error);
     }
 }
+
+
+export const getMyPersonalityItemsByAuthor = async (author:string): Promise<Personality[]> => {
+
+    try {
+      const res = await PersonalityModel.find(
+        { author: author },
+        { _id: 0, selectItems: 0, resultItems: 0, mbtiSelectItems: 0 }
+      );
+  
+      return res;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };

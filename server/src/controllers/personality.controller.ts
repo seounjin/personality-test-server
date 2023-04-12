@@ -4,7 +4,6 @@ import {
   getAllPersonalityItems,
   getPersonalityItemByIdandTestType,
   getPersonalityTestResultByType,
-  getMyPersonalityItemsByAuthor,
   getDetailPersonalityItemsByIdAndTestType,
   updateScoreTypeItemsById,
   saveScoreTypeTest,
@@ -76,18 +75,7 @@ export const getPersonalityTestResult = async (
   }
 };
 
-export const getMyPersonalityTest = async (
-  req: express.Request,
-  res: express.Response
-): Promise<Response> => {
-  const userId = splitEmail(req.user);
-  try {
-    const data = await getMyPersonalityItemsByAuthor(userId);
-    return res.status(200).json({ success: true , data, user: req.user });
-  } catch (error) {
-    return res.status(500).json({ success: false });
-  }
-};
+
 
 export const deleteScoreTypeTest  = async (
   req: express.Request,
