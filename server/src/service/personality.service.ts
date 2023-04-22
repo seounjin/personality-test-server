@@ -499,7 +499,28 @@ export const resetScoreResultImageById = async (id: number, index: number) => {
     const updateResult = await ScoreResultItemsModel.findOneAndUpdate(
       {
         _id: personality.scoreResultItems,
-        // [`resultItems.${index}._id`]: { $exists: true },
+      },
+      { $set: { [`resultItems.${index}.resultImageUrl`]: BASIC_IMAGE_PATH } },
+    );
+    if (!updateResult) {
+      throw new Error('이미지 업데이트 실패');
+    }
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const resetMbtiResultImageById = async (id: number, index: number) => {
+  try {
+
+    const personality = await PersonalityModel.findOne({ id: id });   
+    if (!personality) {
+      throw new Error('찾으려는 테스트 정보 없음');
+    }
+
+    const updateResult = await MbtiResultItemsModel.findOneAndUpdate(
+      {
+        _id: personality.mbtiResultItems,
       },
       { $set: { [`resultItems.${index}.resultImageUrl`]: BASIC_IMAGE_PATH } },
     );

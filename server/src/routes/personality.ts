@@ -16,6 +16,7 @@ import {
   getAccessToken,
   deleteThumbnailImage,
   deleteScoreResultImage,
+  deleteMbtiResultImage,
 } from "../controllers/personality.controller";
 import auth from "../middleware/auth";
 import checkPublic from "../middleware/checkPublic";
@@ -44,7 +45,7 @@ const personalityRoute: CustomRoute[] = [
     {
       method: METHOD.PUT,
       route: "/api/v1/personality/mbti/:id",
-      handler: [ auth, updateMbtiTestType ],
+      handler: [ auth, imageUploader.array('image'), updateMbtiTestType ],
     },  
     {
       method: METHOD.PUT,
@@ -80,6 +81,12 @@ const personalityRoute: CustomRoute[] = [
     },
 
     {
+      method: METHOD.DELETE,
+      route: "/api/v1/personality/:id/mbti-result-image",
+      handler: [auth, deleteImage, deleteMbtiResultImage],
+    },
+
+    {
       method: METHOD.POST,
       route: "/api/v1/personality/score",
       handler: [ auth, imageUploader.array('image'), setScoreTypeTest ],
@@ -87,7 +94,7 @@ const personalityRoute: CustomRoute[] = [
     {
       method: METHOD.POST,
       route: "/api/v1/personality/mbti",
-      handler: [ auth, setMbtiTypeTest ],
+      handler: [ auth, imageUploader.array('image'), setMbtiTypeTest ],
     },
 
     {

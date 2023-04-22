@@ -55,3 +55,11 @@ export interface parseScoreTestRequestBodyProps {
   isPublic: string;
   testType: string;
 }
+
+export interface parseMbtiTestRequestBodyProps {
+  basicInformationItem: string;
+  mbtiResultItems: string;
+  mbtiSelectItems: string;
+  isPublic: string;
+  testType: string;
+}

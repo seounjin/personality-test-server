@@ -1,4 +1,4 @@
-import { parseScoreTestRequestBodyProps } from "../types";
+import { parseMbtiTestRequestBodyProps, parseScoreTestRequestBodyProps } from "../types";
 
 
 export const parseScoreTestRequestBody = ({
@@ -18,6 +18,30 @@ export const parseScoreTestRequestBody = ({
       : [],
     parsedScoreSelectItems: scoreSelectItems
       ? JSON.parse(scoreSelectItems)
+      : [],
+    parsedIsPublic: isPublic !== undefined ? JSON.parse(isPublic) : false,
+    parsedTestType: testType !== undefined ? JSON.parse(testType) : '',
+  };
+};
+
+
+export const parseMbtiTestRequestBody = ({
+  basicInformationItem,
+  mbtiResultItems,
+  mbtiSelectItems,
+  isPublic,
+  testType,
+}: parseMbtiTestRequestBodyProps) => {
+
+  return {
+    parsedBasicInformationItem: basicInformationItem
+      ? JSON.parse(basicInformationItem)
+      : {},
+    parsedMbtiResultItems: mbtiResultItems
+      ? JSON.parse(mbtiResultItems)
+      : [],
+    parsedMbtiSelectItems: mbtiSelectItems
+      ? JSON.parse(mbtiSelectItems)
       : [],
     parsedIsPublic: isPublic !== undefined ? JSON.parse(isPublic) : false,
     parsedTestType: testType !== undefined ? JSON.parse(testType) : '',
