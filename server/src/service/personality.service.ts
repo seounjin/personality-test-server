@@ -14,6 +14,7 @@ import { MbtiResultItemsModel, MbtiSelectItemsModel } from "../models/personalit
 import { ScoreSelectItemsModel, ScoreResultItemsModel } from "../models/personalityModel/scoreTest.model";
 import { AccessTokenModel } from "../models/personalityModel/accessToken.model";
 import jwt from "jsonwebtoken";
+import { BASIC_IMAGE_PATH } from "../const";
 
 
 export const getAllPersonalityItems = async (): Promise<Personality[]> => {
@@ -471,3 +472,41 @@ export const saveAccessToken = async(id: number, accessToken: string) => {
   }
   
 }
+
+export const resetThumbnailImageById = async (id: number) => {
+  try {
+    await PersonalityModel.findOneAndUpdate(
+      { id: id },
+      {
+        $set: {
+          thumbnailImgUrl: BASIC_IMAGE_PATH,
+        },
+      },
+    )
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const resetScoreResultImageById = async (id: number, index: number) => {
+  try {
+
+    const personality = await PersonalityModel.findOne({ id: id });   
+    if (!personality) {
+      throw new Error('찾으려는 테스트 정보 없음');
+    }
+
+    const updateResult = await ScoreResultItemsModel.findOneAndUpdate(
+      {
+        _id: personality.scoreResultItems,
+        // [`resultItems.${index}._id`]: { $exists: true },
+      },
+      { $set: { [`resultItems.${index}.resultImageUrl`]: BASIC_IMAGE_PATH } },
+    );
+    if (!updateResult) {
+      throw new Error('이미지 업데이트 실패');
+    }
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

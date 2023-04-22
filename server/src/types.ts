@@ -47,3 +47,11 @@ export interface ResultItems {
   [key: string]: ResultItem[];
 }
 
+
+export interface parseScoreTestRequestBodyProps {
+  basicInformationItem: string;
+  scoreResultItems: string;
+  scoreSelectItems: string;
+  isPublic: string;
+  testType: string;
+}

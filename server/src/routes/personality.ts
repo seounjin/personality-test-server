@@ -14,12 +14,14 @@ import {
   deleteTrueOrFalseTypeTest,
   updateTrueOrFalseTestType,
   getAccessToken,
+  deleteThumbnailImage,
+  deleteScoreResultImage,
 } from "../controllers/personality.controller";
 import auth from "../middleware/auth";
 import checkPublic from "../middleware/checkPublic";
 import checkDetailPersonality from "../middleware/checkDetailPersonality";
 import checkAccessToken from "../middleware/checkAccessToken";
-import imageUploader from "../middleware/imageUploader";
+import { deleteImage, imageUploader } from "../middleware/imageUploader";
 
 
 const personalityRoute: CustomRoute[] = [
@@ -37,7 +39,7 @@ const personalityRoute: CustomRoute[] = [
     {
       method: METHOD.PUT,
       route: "/api/v1/personality/score/:id",
-      handler: [ auth, updateScoreTestType ],
+      handler: [ auth, imageUploader.array('image'), updateScoreTestType ],
     },
     {
       method: METHOD.PUT,
@@ -63,6 +65,18 @@ const personalityRoute: CustomRoute[] = [
       method: METHOD.DELETE,
       route: "/api/v1/personality/true-or-false/:id",
       handler: [ auth, deleteTrueOrFalseTypeTest],
+    },
+    
+    {
+      method: METHOD.DELETE,
+      route: "/api/v1/personality/:id/thumbnail",
+      handler: [auth, deleteImage, deleteThumbnailImage],
+    },
+
+    {
+      method: METHOD.DELETE,
+      route: "/api/v1/personality/:id/score-result-image",
+      handler: [auth, deleteImage, deleteScoreResultImage],
     },
 
     {

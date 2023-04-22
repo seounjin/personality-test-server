@@ -16,9 +16,13 @@ import {
   updateTrueOrFalseTestItemsById,
   findAccessTokenById,
   createAccessToken,
-  saveAccessToken
+  saveAccessToken,
+  resetThumbnailImageById,
+  resetScoreResultImageById,
 } from "../service/personality.service";
+import addImageUrlsToResultItems from "../utils/addImageUrlsToResultItems";
 import { uploadImageFile } from "../utils/imageUpload";
+import { parseScoreTestRequestBody } from "../utils/parseRequestBody";
 import { parseTestItems } from "../utils/parseTestItems";
 import { processUploadedFiles } from "../utils/processUploadedFiles";
 import { splitEmail } from "../utils/splitEmail";
@@ -141,17 +145,37 @@ export const updateScoreTestType   = async (
   req: express.Request,
   res: express.Response
 ): Promise<Response> => {
-  const { data } = req.body;
-  
+
+
+    const {
+      parsedBasicInformationItem,
+      parsedScoreResultItems,
+      parsedScoreSelectItems,
+      parsedIsPublic,
+      parsedTestType,
+  } = parseScoreTestRequestBody(req.body);
+
+  const id = parseInt(req.params.id);
+
+
   try {
-    const filename = data.isChangeImage
-    ? await uploadImageFile(data.basicInformationItem.imageData)
-    : data.thumbnailImgUrl;
-    
-    const scoreTypeTest = parseTestItems(data, splitEmail(req.user), filename);
-    const id = parseInt(req.params.id);
+    const { thumbnailFile, resultImgFile } = processUploadedFiles(req);
+
+    const scoreTypeTest = {
+      basicInformationItem: {
+        ...parsedBasicInformationItem,
+        thumbnailImgUrl:
+          thumbnailFile?.location || parsedBasicInformationItem.thumbnailImgUrl
+      }, 
+      scoreResultItems: addImageUrlsToResultItems(parsedScoreResultItems, resultImgFile),
+      scoreSelectItems: parsedScoreSelectItems,
+      isPublic: parsedIsPublic,
+      testType: parsedTestType,
+      userId: splitEmail(req.user),
+    };
 
     await updateScoreTypeItemsById(scoreTypeTest, id);
+
     return res.status(200).json({ success: true });  
 
   } catch (error) {
@@ -280,20 +304,17 @@ export const setScoreTypeTest = async (
   req: express.Request,
   res: express.Response,
 ): Promise<Response> => {
-  const { basicInformationItem, scoreResultItems, scoreSelectItems, isPublic, testType } = req.body
-  const parsedBasicInformationItem = basicInformationItem ? JSON.parse(basicInformationItem) : {};
-  const parsedScoreResultItems = scoreResultItems ? JSON.parse(scoreResultItems) : [];
-  const parsedScoreSelectItems = scoreSelectItems ? JSON.parse(scoreSelectItems) : [];
-  const parsedIsPublic = isPublic !== undefined ? JSON.parse(isPublic) : false;
-  const parsedTestType = testType !== undefined ? JSON.parse(testType) : '';
+    const {
+      parsedBasicInformationItem,
+      parsedScoreResultItems,
+      parsedScoreSelectItems,
+      parsedIsPublic,
+      parsedTestType,
+  } = parseScoreTestRequestBody(req.body);
+
   
   try {
     const { thumbnailFile, resultImgFile } = processUploadedFiles(req);
-
-    resultImgFile.forEach((imgFile) => {
-      const index = imgFile.fieldname.split('_')[1];
-      parsedScoreResultItems[parseInt(index)].resultImageUrl = imgFile.location;
-    });
 
     const scoreTypeTest = {
       basicInformationItem: {
@@ -301,7 +322,7 @@ export const setScoreTypeTest = async (
         thumbnailImgUrl:
           thumbnailFile?.location || parsedBasicInformationItem.thumbnailImgUrl
       }, 
-      scoreResultItems: parsedScoreResultItems,
+      scoreResultItems: addImageUrlsToResultItems(parsedScoreResultItems, resultImgFile),
       scoreSelectItems: parsedScoreSelectItems,
       isPublic: parsedIsPublic,
       testType: parsedTestType,
@@ -313,5 +334,36 @@ export const setScoreTypeTest = async (
     return res.status(201).json({ success: true });
   } catch (error) {
     return res.status(500).json({ success: false });
+  }
+};
+
+export const deleteThumbnailImage = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => {
+
+  const id = parseInt(req.params.id);
+  
+  try {
+    await resetThumbnailImageById(id);
+    return res.status(201).json({ success: true });    
+  } catch (error) {
+    return res.status(500).json({ success: false }); 
+  }
+};
+
+export const deleteScoreResultImage = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => {
+  const { index } = req.query;
+
+  const id = parseInt(req.params.id);
+
+  try {
+    await resetScoreResultImageById(id, parseInt(index as string));
+    return res.status(201).json({ success: true });    
+  } catch (error) {
+    return res.status(500).json({ success: false }); 
   }
 };
