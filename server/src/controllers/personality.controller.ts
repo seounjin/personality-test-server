@@ -20,6 +20,7 @@ import {
 } from "../service/personality.service";
 import { uploadImageFile } from "../utils/imageUpload";
 import { parseTestItems } from "../utils/parseTestItems";
+import { processUploadedFiles } from "../utils/processUploadedFiles";
 import { splitEmail } from "../utils/splitEmail";
 
 process.env.NODE_ENV = ( process.env.NODE_ENV && ( process.env.NODE_ENV ).trim().toLowerCase() == 'production' ) ? 'production' : 'development';
@@ -203,26 +204,6 @@ export const updateTrueOrFalseTestType   = async (
   }
 };
 
-
-export const setScoreTypeTest = async (
-  req: express.Request,
-  res: express.Response
-): Promise<Response> => {
-  const { data } = req.body;
-
-  try {
-    const filename = data.isChangeImage
-    ? await uploadImageFile(data.basicInformationItem.imageData)
-    : data.thumbnailImgUrl;
-
-    const scoreTypeTest = parseTestItems(data, splitEmail(req.user), filename);
-    await saveScoreTypeTest(scoreTypeTest);
-    return res.status(201).json({ success: true });    
-  } catch (error) {
-    return res.status(500).json({ success: false }); 
-  }
-};
-
 export const setMbtiTypeTest = async (
   req: express.Request,
   res: express.Response
@@ -290,5 +271,47 @@ export const getAccessToken = async (
     return res.status(201).json({ success: true, accessToken: newAccessToken });    
   } catch (error) {
     return res.status(500).json({ success: false }); 
+  }
+};
+
+
+
+export const setScoreTypeTest = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<Response> => {
+  const { basicInformationItem, scoreResultItems, scoreSelectItems, isPublic, testType } = req.body
+  const parsedBasicInformationItem = basicInformationItem ? JSON.parse(basicInformationItem) : {};
+  const parsedScoreResultItems = scoreResultItems ? JSON.parse(scoreResultItems) : [];
+  const parsedScoreSelectItems = scoreSelectItems ? JSON.parse(scoreSelectItems) : [];
+  const parsedIsPublic = isPublic !== undefined ? JSON.parse(isPublic) : false;
+  const parsedTestType = testType !== undefined ? JSON.parse(testType) : '';
+  
+  try {
+    const { thumbnailFile, resultImgFile } = processUploadedFiles(req);
+
+    resultImgFile.forEach((imgFile) => {
+      const index = imgFile.fieldname.split('_')[1];
+      parsedScoreResultItems[parseInt(index)].resultImageUrl = imgFile.location;
+    });
+
+    const scoreTypeTest = {
+      basicInformationItem: {
+        ...parsedBasicInformationItem,
+        thumbnailImgUrl:
+          thumbnailFile?.location || parsedBasicInformationItem.thumbnailImgUrl
+      }, 
+      scoreResultItems: parsedScoreResultItems,
+      scoreSelectItems: parsedScoreSelectItems,
+      isPublic: parsedIsPublic,
+      testType: parsedTestType,
+      userId: splitEmail(req.user),
+    };
+
+    await saveScoreTypeTest(scoreTypeTest);
+
+    return res.status(201).json({ success: true });
+  } catch (error) {
+    return res.status(500).json({ success: false });
   }
 };

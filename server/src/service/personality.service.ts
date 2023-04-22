@@ -341,6 +341,7 @@ export const saveScoreTypeTest = async (scoreTypeTest: ScoreTypeTest) => {
       await personality.save(),
     ]);
   } catch (error) {
+    console.log("에러확인", error)
     return Promise.reject(error);
   }
 };

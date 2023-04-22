@@ -19,10 +19,10 @@ import auth from "../middleware/auth";
 import checkPublic from "../middleware/checkPublic";
 import checkDetailPersonality from "../middleware/checkDetailPersonality";
 import checkAccessToken from "../middleware/checkAccessToken";
+import imageUploader from "../middleware/imageUploader";
 
 
 const personalityRoute: CustomRoute[] = [
-
     {
       method: METHOD.GET,
       route: "/api/v1/personality/private/:id",
@@ -68,7 +68,7 @@ const personalityRoute: CustomRoute[] = [
     {
       method: METHOD.POST,
       route: "/api/v1/personality/score",
-      handler: [ auth, setScoreTypeTest ],
+      handler: [ auth, imageUploader.array('image'), setScoreTypeTest ],
     },
     {
       method: METHOD.POST,

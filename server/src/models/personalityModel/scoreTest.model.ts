@@ -22,15 +22,21 @@ export class ScoreSelectItems {
     };
 }
 
-
 export class ScoreResultItems {
-    @prop({ required: true })
-    _id: mongoose.Schema.Types.ObjectId;
-  
-    @prop({ required: true })
-    resultItems: { type: [{ resultContent: String; explanationContent: String }] };
+  @prop({ required: true })
+  _id: mongoose.Schema.Types.ObjectId;
+
+  @prop({ required: true })
+  resultItems: {
+    type: [
+      {
+        resultContent: String;
+        explanationContent: String;
+        resultImageUrl?: String;
+      },
+    ];
+  };
 }
-  
 
 export const ScoreSelectItemsModel = getModelForClass(ScoreSelectItems);
 export const ScoreResultItemsModel = getModelForClass(ScoreResultItems);
