@@ -2,7 +2,6 @@ import { AutoIncrementID } from "@typegoose/auto-increment";
 import {
   prop,
   plugin,
-  mongoose,
   getModelForClass,
   Ref,
 } from "@typegoose/typegoose";
@@ -12,7 +11,7 @@ import { TrueOrFalseResultItems, TrueOrFalseSelectItems } from "./trueOrFalseTes
 
 
 @plugin(AutoIncrementID, { field: "id", startAt: 1 })
-class Personality {
+export class Personality {
   @prop({ unique: true })
   id: number;
 

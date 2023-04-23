@@ -1,7 +1,7 @@
 import {
   PersonalityModel,
 } from "../models/personalityModel/personality.model";
-import { mongoose } from "@typegoose/typegoose";
+import { DocumentType, mongoose } from "@typegoose/typegoose";
 import {
   MbtiTypeTest,
   Personality,
@@ -15,6 +15,7 @@ import { ScoreSelectItemsModel, ScoreResultItemsModel } from "../models/personal
 import { AccessTokenModel } from "../models/personalityModel/accessToken.model";
 import jwt from "jsonwebtoken";
 import { BASIC_IMAGE_PATH } from "../const";
+import { MbtiResultItemsDocument, PersonalityDocument, ScoreResultItemsDocument, TrueOrFalseResultItemsDocument } from "../types";
 
 
 export const getAllPersonalityItems = async (): Promise<Personality[]> => {
@@ -97,36 +98,40 @@ export const getPersonalityTestResultByType = async (
   }
 };
 
-export const deleteScoreTypeTestById = async (id: number) => {
+export const deleteScoreTypeTestById = async (id: number): Promise<[PersonalityDocument, ScoreResultItemsDocument]> => {
   
   try {
 
-    const res = await PersonalityModel.findOneAndDelete({ id: id });   
-    if (!res) return Promise.reject('찾으려는 문서가 없음');
+    const personality = await PersonalityModel.findOneAndDelete({ id: id });   
+    if (!personality) return Promise.reject('찾으려는 personality 없음');
+    
+    const scoreSelectItems = await ScoreSelectItemsModel.findOneAndDelete({_id: personality.scoreSelectItems});
+    if (!scoreSelectItems) return Promise.reject('찾으려는 scoreSelectItems 없음');
 
-    await Promise.all([
-      await ScoreSelectItemsModel.findOneAndDelete({_id: res.scoreSelectItems}),
-      await ScoreResultItemsModel.findOneAndDelete({_id: res.scoreResultItems}),
-    ]);
+    const scoreResultItems = await ScoreResultItemsModel.findOneAndDelete({_id: personality.scoreResultItems});
+    if (!scoreResultItems) return Promise.reject('찾으려는 scoreResultItems 없음');
 
+    return [personality, scoreResultItems];
 
   } catch (error) {
     return Promise.reject(error);
   }
 }
 
-export const deleteMbtiTypeTestById = async (id: number) => {
+export const deleteMbtiTypeTestById = async (id: number): Promise<[PersonalityDocument, MbtiResultItemsDocument]> => {
   
   try {
 
-    const res = await PersonalityModel.findOneAndDelete({ id: id });   
-    if (!res) return Promise.reject('찾으려는 문서가 없음');
+    const personality = await PersonalityModel.findOneAndDelete({ id: id });   
+    if (!personality) return Promise.reject('찾으려는 personality 없음');
 
-    await Promise.all([
-      await MbtiSelectItemsModel.findOneAndDelete({_id: res.mbtiSelectItems}),
-      await MbtiResultItemsModel.findOneAndDelete({_id: res.mbtiResultItems}),
-    ]);
+    const mbtiSelectItems = await MbtiSelectItemsModel.findOneAndDelete({_id: personality.mbtiSelectItems});
+    if (!mbtiSelectItems) return Promise.reject('찾으려는 mbtiSelectItems 없음');
 
+    const mbtiResultItems = await MbtiResultItemsModel.findOneAndDelete({_id: personality.mbtiResultItems});
+    if (!mbtiResultItems) return Promise.reject('찾으려는 mbtiResultItems 없음');
+
+    return [personality, mbtiResultItems];
 
   } catch (error) {
     return Promise.reject(error);
@@ -135,18 +140,21 @@ export const deleteMbtiTypeTestById = async (id: number) => {
 }
 
 
-export const deleteTrueOrFalseTypeTestById = async (id: number) => {
+export const deleteTrueOrFalseTypeTestById = async (id: number): Promise<[PersonalityDocument, TrueOrFalseResultItemsDocument]> => {
   
   try {
 
-    const res = await PersonalityModel.findOneAndDelete({ id: id });   
-    if (!res) return Promise.reject('찾으려는 문서가 없음');
+    const personality = await PersonalityModel.findOneAndDelete({ id: id });   
+    if (!personality) return Promise.reject('찾으려는 personality 없음');
 
-    await Promise.all([
-      await TrueOrFalseSelectItemsModel.findOneAndDelete({_id: res.trueOrFalseSelectItems}),
-      await TrueOrFalseResultItemsModel.findOneAndDelete({_id: res.trueOrFalseResultItems}),
-    ]);
 
+    const trueOrFalseSelectItems = await TrueOrFalseSelectItemsModel.findOneAndDelete({_id: personality.trueOrFalseSelectItems})
+    if (!trueOrFalseSelectItems) return Promise.reject('찾으려는 trueOrFalseSelectItems 없음');
+
+    const trueOrFalseResultItems = await TrueOrFalseResultItemsModel.findOneAndDelete({_id: personality.trueOrFalseResultItems})
+    if (!trueOrFalseResultItems) return Promise.reject('찾으려는 trueOrFalseResultItems 없음');
+
+    return [personality, trueOrFalseResultItems];
 
   } catch (error) {
     return Promise.reject(error);

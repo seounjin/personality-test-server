@@ -23,10 +23,9 @@ import {
   resetTrueOrFalseResultImageById,
 } from "../service/personality.service";
 import addImageUrlsToResultItems from "../utils/addImageUrlsToResultItems";
-import { uploadImageFile } from "../utils/imageUpload";
 import { parseMbtiTestRequestBody, parseScoreTestRequestBody, parseTrueOrFalseTestRequestBody } from "../utils/parseRequestBody";
-import { parseTestItems } from "../utils/parseTestItems";
 import { processUploadedFiles } from "../utils/processUploadedFiles";
+import { deleteImagesFromS3, isValidS3ImageUrl, parseS3Url } from "../utils/s3Utils";
 import { splitEmail } from "../utils/splitEmail";
 
 process.env.NODE_ENV = ( process.env.NODE_ENV && ( process.env.NODE_ENV ).trim().toLowerCase() == 'production' ) ? 'production' : 'development';
@@ -91,7 +90,23 @@ export const deleteScoreTypeTest  = async (
   const id = parseInt(req.params.id);
 
   try {
-    await deleteScoreTypeTestById(id);
+    const [personality, scoreResultItems] = await deleteScoreTypeTestById(id);
+
+    const thumbnailImagePath: Array<string> = isValidS3ImageUrl(
+      personality.thumbnailImgUrl,
+    )
+      ? [parseS3Url(personality.thumbnailImgUrl).imagePath]
+      : [];
+    
+    const scoreResultItemImagePaths: Array<string> = scoreResultItems.resultItems
+      .filter((data) => isValidS3ImageUrl(data.resultImageUrl))
+      .map((data) => {
+        const parsedUrl = parseS3Url(data.resultImageUrl);
+        return parsedUrl.imagePath;
+      });
+    
+    await deleteImagesFromS3([...thumbnailImagePath, ...scoreResultItemImagePaths]);
+
     return res.status(200).json({ success: true });  
   } catch (error) {
     return res.status(500).json({ success: false });  
@@ -105,7 +120,23 @@ export const deleteMbtiTypeTest  = async (
   const id = parseInt(req.params.id);
 
   try {
-    await deleteMbtiTypeTestById(id);
+    const [personality, mbtiResultItems] = await deleteMbtiTypeTestById(id);
+
+    const thumbnailImagePath: Array<string> = isValidS3ImageUrl(
+      personality.thumbnailImgUrl,
+    )
+      ? [parseS3Url(personality.thumbnailImgUrl).imagePath]
+      : [];
+    
+    const scoreResultItemImagePaths: Array<string> = mbtiResultItems.resultItems
+      .filter((data) => isValidS3ImageUrl(data.resultImageUrl))
+      .map((data) => {
+        const parsedUrl = parseS3Url(data.resultImageUrl);
+        return parsedUrl.imagePath;
+      });
+    
+    await deleteImagesFromS3([...thumbnailImagePath, ...scoreResultItemImagePaths]);
+
     return res.status(200).json({ success: true });  
   } catch (error) {
     return res.status(500).json({ success: false });  
@@ -119,8 +150,23 @@ export const deleteTrueOrFalseTypeTest  = async (
   const id = parseInt(req.params.id);
 
   try {
-    await deleteTrueOrFalseTypeTestById(id);
+    const [personality, trueOrFalseResultItems] = await deleteTrueOrFalseTypeTestById(id);
     
+    const thumbnailImagePath: Array<string> = isValidS3ImageUrl(
+      personality.thumbnailImgUrl,
+    )
+      ? [parseS3Url(personality.thumbnailImgUrl).imagePath]
+      : [];
+    
+    const scoreResultItemImagePaths: Array<string> = trueOrFalseResultItems.resultItems
+      .filter((data) => isValidS3ImageUrl(data.resultImageUrl))
+      .map((data) => {
+        const parsedUrl = parseS3Url(data.resultImageUrl);
+        return parsedUrl.imagePath;
+      });
+    
+    await deleteImagesFromS3([...thumbnailImagePath, ...scoreResultItemImagePaths]);
+
     return res.status(200).json({ success: true });  
   } catch (error) {
     return res.status(500).json({ success: false });  

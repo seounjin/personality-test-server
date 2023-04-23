@@ -1,41 +1,33 @@
 import { prop, mongoose, getModelForClass } from "@typegoose/typegoose";
 
 
-
 export class ScoreSelectItems {
-    @prop({ required: true })
-    _id: mongoose.Schema.Types.ObjectId;
-  
-    @prop({ required: true })
-    selectItems: {
-      type: [
-        {
-          question: String;
-          optionItems: [
-            {
-              option: String;
-              weightedScoreItems: [{ resultContent: String; score: Number }];
-            }
-          ];
-        }
-      ];
-    };
+  @prop({ required: true })
+  _id: mongoose.Schema.Types.ObjectId;
+
+  @prop({ required: true, type: Array })
+  selectItems: {
+    question: string;
+    optionItems: {
+      option: string;
+      weightedScoreItems: {
+        resultContent: string;
+        score: number;
+      }[];
+    }[];
+  }[];
 }
 
 export class ScoreResultItems {
   @prop({ required: true })
   _id: mongoose.Schema.Types.ObjectId;
 
-  @prop({ required: true })
+  @prop({ required: true, type: Array })
   resultItems: {
-    type: [
-      {
-        resultContent: String;
-        explanationContent: String;
-        resultImageUrl?: String;
-      },
-    ];
-  };
+    resultContent: string;
+    explanationContent: string;
+    resultImageUrl: string;
+  }[];
 }
 
 export const ScoreSelectItemsModel = getModelForClass(ScoreSelectItems);

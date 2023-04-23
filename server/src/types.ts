@@ -1,4 +1,9 @@
+import { DocumentType } from "@typegoose/typegoose";
 import express, { NextFunction } from "express";
+import { MbtiResultItems } from "./models/personalityModel/mbtiTest.model";
+import { Personality } from "./models/personalityModel/personality.model";
+import { ScoreResultItems } from "./models/personalityModel/scoreTest.model";
+import { TrueOrFalseResultItems } from "./models/personalityModel/trueOrFalseTest.model";
 
 export enum METHOD {
   GET = "get",
@@ -69,3 +74,11 @@ export interface ParseTrueOrFalseTestRequestBodyProps extends RequestBodyProps {
   trueOrFalseTestResultFormItems: string;
   trueOrFalseTestSelectFormItems: string;
 }
+
+export type PersonalityDocument = DocumentType<Personality>;
+
+export type ScoreResultItemsDocument = DocumentType<ScoreResultItems>;
+
+export type MbtiResultItemsDocument = DocumentType<MbtiResultItems>;
+
+export type TrueOrFalseResultItemsDocument = DocumentType<TrueOrFalseResultItems>;
