@@ -31,6 +31,7 @@ export class TrueOrFalseResultItems {
           selectedOptionNumber: string;
           resultContent: string;
           explanationContent: string;
+          resultImageUrl: String;
           selectedOption: [
             {
               qusetionNumber: number;

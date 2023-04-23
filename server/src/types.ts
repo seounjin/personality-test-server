@@ -48,18 +48,24 @@ export interface ResultItems {
 }
 
 
-export interface parseScoreTestRequestBodyProps {
+interface RequestBodyProps {
   basicInformationItem: string;
-  scoreResultItems: string;
-  scoreSelectItems: string;
   isPublic: string;
   testType: string;
 }
 
-export interface parseMbtiTestRequestBodyProps {
-  basicInformationItem: string;
+
+export interface ParseScoreTestRequestBodyProps extends RequestBodyProps {
+  scoreResultItems: string;
+  scoreSelectItems: string;
+}
+
+export interface ParseMbtiTestRequestBodyProps extends RequestBodyProps {
   mbtiResultItems: string;
   mbtiSelectItems: string;
-  isPublic: string;
-  testType: string;
+}
+
+export interface ParseTrueOrFalseTestRequestBodyProps extends RequestBodyProps {
+  trueOrFalseTestResultFormItems: string;
+  trueOrFalseTestSelectFormItems: string;
 }

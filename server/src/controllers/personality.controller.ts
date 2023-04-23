@@ -20,10 +20,11 @@ import {
   resetThumbnailImageById,
   resetScoreResultImageById,
   resetMbtiResultImageById,
+  resetTrueOrFalseResultImageById,
 } from "../service/personality.service";
 import addImageUrlsToResultItems from "../utils/addImageUrlsToResultItems";
 import { uploadImageFile } from "../utils/imageUpload";
-import { parseMbtiTestRequestBody, parseScoreTestRequestBody } from "../utils/parseRequestBody";
+import { parseMbtiTestRequestBody, parseScoreTestRequestBody, parseTrueOrFalseTestRequestBody } from "../utils/parseRequestBody";
 import { parseTestItems } from "../utils/parseTestItems";
 import { processUploadedFiles } from "../utils/processUploadedFiles";
 import { splitEmail } from "../utils/splitEmail";
@@ -225,17 +226,31 @@ export const updateTrueOrFalseTestType   = async (
   req: express.Request,
   res: express.Response
 ): Promise<Response> => {
-  const { data } = req.body;
-
+  const {
+    parsedBasicInformationItem,
+    parsedTrueOrFalseResultItems,
+    parsedTrueOrFalseSelectItems,
+    parsedIsPublic,
+    parsedTestType,
+  } = parseTrueOrFalseTestRequestBody(req.body);
+  const id = parseInt(req.params.id);
 
   try {
-    const filename = data.isChangeImage
-    ? await uploadImageFile(data.basicInformationItem.imageData)
-    : data.thumbnailImgUrl;
+    const { thumbnailFile, resultImgFile } = processUploadedFiles(req);
 
-  const trueOrFalseTypeTest = parseTestItems(data, splitEmail(req.user), filename);
+    const trueOrFalseTypeTest = {
+      basicInformationItem: {
+        ...parsedBasicInformationItem,
+        thumbnailImgUrl:
+          thumbnailFile?.location || parsedBasicInformationItem.thumbnailImgUrl
+      }, 
+      trueOrFalseTestResultFormItems: addImageUrlsToResultItems(parsedTrueOrFalseResultItems, resultImgFile),
+      trueOrFalseTestSelectFormItems: parsedTrueOrFalseSelectItems,
+      isPublic: parsedIsPublic,
+      testType: parsedTestType,
+      userId: splitEmail(req.user),
+    };
 
-  const id = parseInt(req.params.id);
     await updateTrueOrFalseTestItemsById(trueOrFalseTypeTest, id);
     return res.status(200).json({ success: true });  
   } catch (error) {
@@ -284,17 +299,31 @@ export const setTrueOrFalseTypeTest = async (
   req: express.Request,
   res: express.Response
 ): Promise<Response> => {
-  const { data } = req.body;
 
+  const {
+    parsedBasicInformationItem,
+    parsedTrueOrFalseResultItems,
+    parsedTrueOrFalseSelectItems,
+    parsedIsPublic,
+    parsedTestType,
+  } = parseTrueOrFalseTestRequestBody(req.body);
 
   try {
+    const { thumbnailFile, resultImgFile } = processUploadedFiles(req);
 
-    const filename = data.isChangeImage
-    ? await uploadImageFile(data.basicInformationItem.imageData)
-    : data.thumbnailImgUrl;
+    const trueOrFalseTypeTest = {
+      basicInformationItem: {
+        ...parsedBasicInformationItem,
+        thumbnailImgUrl:
+          thumbnailFile?.location || parsedBasicInformationItem.thumbnailImgUrl
+      }, 
+      trueOrFalseTestResultFormItems: addImageUrlsToResultItems(parsedTrueOrFalseResultItems, resultImgFile),
+      trueOrFalseTestSelectFormItems: parsedTrueOrFalseSelectItems,
+      isPublic: parsedIsPublic,
+      testType: parsedTestType,
+      userId: splitEmail(req.user),
+    };
 
-    const trueOrFalseTypeTest = parseTestItems(data, splitEmail(req.user), filename);
-    
     await saveTrueOrFalseTypeTest(trueOrFalseTypeTest);
 
     return res.status(201).json({ success: true });    
@@ -404,6 +433,20 @@ export const deleteMbtiResultImage = async (
   const id = parseInt(req.params.id);
   try {
     await resetMbtiResultImageById(id, parseInt(index as string));
+    return res.status(201).json({ success: true });    
+  } catch (error) {
+    return res.status(500).json({ success: false }); 
+  }
+};
+
+export const deleteTrueOrFalseResultImage = async (
+  req: express.Request,
+  res: express.Response
+): Promise<Response> => {
+  const { index } = req.query;
+  const id = parseInt(req.params.id);
+  try {
+    await resetTrueOrFalseResultImageById(id, parseInt(index as string));
     return res.status(201).json({ success: true });    
   } catch (error) {
     return res.status(500).json({ success: false }); 

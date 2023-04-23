@@ -17,6 +17,7 @@ import {
   deleteThumbnailImage,
   deleteScoreResultImage,
   deleteMbtiResultImage,
+  deleteTrueOrFalseResultImage,
 } from "../controllers/personality.controller";
 import auth from "../middleware/auth";
 import checkPublic from "../middleware/checkPublic";
@@ -50,7 +51,7 @@ const personalityRoute: CustomRoute[] = [
     {
       method: METHOD.PUT,
       route: "/api/v1/personality/true-or-false/:id",
-      handler: [ auth, updateTrueOrFalseTestType],
+      handler: [ auth, imageUploader.array('image'), updateTrueOrFalseTestType],
     },  
     {
       method: METHOD.DELETE,
@@ -87,6 +88,12 @@ const personalityRoute: CustomRoute[] = [
     },
 
     {
+      method: METHOD.DELETE,
+      route: "/api/v1/personality/:id/true-or-false-result-image",
+      handler: [auth, deleteImage, deleteTrueOrFalseResultImage],
+    },
+
+    {
       method: METHOD.POST,
       route: "/api/v1/personality/score",
       handler: [ auth, imageUploader.array('image'), setScoreTypeTest ],
@@ -100,7 +107,7 @@ const personalityRoute: CustomRoute[] = [
     {
       method: METHOD.POST,
       route: "/api/v1/personality/true-or-false",
-      handler: [ auth, setTrueOrFalseTypeTest],
+      handler: [ auth, imageUploader.array('image'), setTrueOrFalseTypeTest],
     },
 
     {

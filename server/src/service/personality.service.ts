@@ -531,3 +531,26 @@ export const resetMbtiResultImageById = async (id: number, index: number) => {
     return Promise.reject(error);
   }
 };
+
+export const resetTrueOrFalseResultImageById = async (id: number, index: number) => {
+
+  try {
+
+    const personality = await PersonalityModel.findOne({ id: id });   
+    if (!personality) {
+      throw new Error('찾으려는 테스트 정보 없음');
+    }
+
+    const updateResult = await TrueOrFalseResultItemsModel.findOneAndUpdate(
+      {
+        _id: personality.trueOrFalseResultItems,
+      },
+      { $set: { [`resultItems.${index}.resultImageUrl`]: BASIC_IMAGE_PATH } },
+    );
+    if (!updateResult) {
+      throw new Error('이미지 업데이트 실패');
+    }
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

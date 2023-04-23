@@ -1,4 +1,4 @@
-import { parseMbtiTestRequestBodyProps, parseScoreTestRequestBodyProps } from "../types";
+import { ParseScoreTestRequestBodyProps, ParseMbtiTestRequestBodyProps, ParseTrueOrFalseTestRequestBodyProps } from "../types";
 
 
 export const parseScoreTestRequestBody = ({
@@ -7,7 +7,7 @@ export const parseScoreTestRequestBody = ({
   scoreSelectItems,
   isPublic,
   testType,
-}: parseScoreTestRequestBodyProps) => {
+}: ParseScoreTestRequestBodyProps) => {
 
   return {
     parsedBasicInformationItem: basicInformationItem
@@ -31,7 +31,7 @@ export const parseMbtiTestRequestBody = ({
   mbtiSelectItems,
   isPublic,
   testType,
-}: parseMbtiTestRequestBodyProps) => {
+}: ParseMbtiTestRequestBodyProps) => {
 
   return {
     parsedBasicInformationItem: basicInformationItem
@@ -42,6 +42,30 @@ export const parseMbtiTestRequestBody = ({
       : [],
     parsedMbtiSelectItems: mbtiSelectItems
       ? JSON.parse(mbtiSelectItems)
+      : [],
+    parsedIsPublic: isPublic !== undefined ? JSON.parse(isPublic) : false,
+    parsedTestType: testType !== undefined ? JSON.parse(testType) : '',
+  };
+};
+
+
+export const parseTrueOrFalseTestRequestBody = ({
+  basicInformationItem,
+  trueOrFalseTestResultFormItems,
+  trueOrFalseTestSelectFormItems,
+  isPublic,
+  testType,
+}: ParseTrueOrFalseTestRequestBodyProps) => {
+
+  return {
+    parsedBasicInformationItem: basicInformationItem
+      ? JSON.parse(basicInformationItem)
+      : {},
+    parsedTrueOrFalseResultItems: trueOrFalseTestResultFormItems
+      ? JSON.parse(trueOrFalseTestResultFormItems)
+      : [],
+    parsedTrueOrFalseSelectItems: trueOrFalseTestSelectFormItems
+      ? JSON.parse(trueOrFalseTestSelectFormItems)
       : [],
     parsedIsPublic: isPublic !== undefined ? JSON.parse(isPublic) : false,
     parsedTestType: testType !== undefined ? JSON.parse(testType) : '',
