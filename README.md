@@ -17,6 +17,11 @@
 -----------
 - Node.js Express 기반 REST API 서버 개발
 - 성향테스트 CRUD 구현
+- 서버 Docker file 작성
+- Nginx Reversy Proxy 구축
+- Git actions를 사용한 서버 CI/CD 구축
+- AWS EC2 환경 REST API 서버 배포
+- S3 이미지 저장 및 삭제
 
 <br/>
 
